@@ -25,14 +25,8 @@ public class MyFirstProgram {
     // выводим координаты точек t1,t2
     System.out.println("Координаты точки t1 = " + t1.x + "; " + t1.y);
     System.out.println("Координаты точки t2 = " + t2.x + "; " + t2.y);
-    // для объектов t1,t2 вызывается метод distance(t1, t2)
-    System.out.println("Расстояние между точками = " + distance(t1, t2));
-  }
-
-  // метод вычисления расстояния между точками. используется static, т.к. метод не ассоциируется с объектом
-  public static double distance(Point t1, Point t2) {
-    return Math.sqrt((Math.pow(t2.x - t1.x, 2)) + (Math.pow(t2.y - t1.y, 2)));
-
+    // для объектов t1,t2 вызываем метод distance. он обращается к точке t1, меряет расстояние до t2.
+    System.out.println("Расстояние между точками = " + t1.distance(t2));
   }
 
   public static void hello(String somebody) {

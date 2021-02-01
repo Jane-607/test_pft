@@ -11,4 +11,10 @@ public class Point {
     this.x = x;
     this.y = y;
   }
+
+  // метод вычисления расстояния до t2
+  public double distance(Point t2) {
+    // this.x - текущая точка с координатой х, t2.х - другая точка с координатой х
+    return Math.sqrt((Math.pow(t2.x - this.x, 2)) + (Math.pow(t2.y - this.y, 2)));
+  }
 }
