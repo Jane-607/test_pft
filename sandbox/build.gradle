@@ -7,5 +7,5 @@ repositories {
 }
 
 dependencies {
-    compile 'org.testng:testng:7.3.0'
+    compile 'org.testng:testng:7.0.0'
 }
