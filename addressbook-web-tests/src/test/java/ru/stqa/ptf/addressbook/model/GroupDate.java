@@ -1,4 +1,4 @@
-package ru.stqa.ptf.addressbook;
+package ru.stqa.ptf.addressbook.model;
 
 public class GroupDate {
   private final String name;
