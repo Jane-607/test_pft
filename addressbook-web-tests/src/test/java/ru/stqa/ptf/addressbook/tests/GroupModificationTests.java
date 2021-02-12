@@ -1,6 +1,5 @@
 package ru.stqa.ptf.addressbook.tests;
 
-import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.GroupDate;
 
@@ -15,6 +14,6 @@ public class GroupModificationTests extends TestBase {
     app.getGroupHelper().fillGroupForm(new GroupDate("test1", "test2", "test3"));
     app.getGroupHelper().submitGroupModification();
     app.getGroupHelper().returnToGroupPage();
-    }
+  }
 
 }
