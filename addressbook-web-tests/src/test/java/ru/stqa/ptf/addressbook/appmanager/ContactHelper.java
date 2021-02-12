@@ -5,6 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import ru.stqa.ptf.addressbook.model.ContactDate;
 
 public class ContactHelper extends HelperBase {
+
   public ContactHelper(ChromeDriver wd) {
     super(wd);
   }
@@ -13,9 +14,7 @@ public class ContactHelper extends HelperBase {
     click(By.linkText("home"));
   }
 
-  public void submitContactCreation() {
-    click(By.name("submit"));
-  }
+  public void submitContactCreation() { click(By.name("submit")); }
 
   public void fillContactForm(ContactDate contactDate) {
     type(By.name("firstname"), contactDate.getFirstName());
@@ -37,4 +36,9 @@ public class ContactHelper extends HelperBase {
   public void selectContact() {
     click(By.name("selected[]"));
   }
+
+  public void initContactModification() { click(By.xpath("//img[@alt='Edit']")); }
+
+  public void submitContacModification() {click(By.name("update")); }
 }
+
