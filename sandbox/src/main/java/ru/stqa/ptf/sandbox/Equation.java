@@ -17,14 +17,24 @@ public class Equation {
 
     if (a == 0) {
       if (b == 0) {
-        if (c == 0) { n = -1; }
-    else { n = 0; } }
-        else { n = 1; }
+        if (c == 0) {
+          n = -1;
+        } else {
+          n = 0;
+        }
+      } else {
+        n = 1;
       }
-
-    if (d > 0) { n = 2; }
-    else { if (d == 0) { n = 1; }
-    else { n = 0; }
+    } else {
+      if (d > 0) {
+        n = 2;
+      } else {
+        if (d == 0) {
+          n = 1;
+        } else {
+          n = 0;
+        }
+      }
     }
   }
     public int rootNunber () {
