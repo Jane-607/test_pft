@@ -15,18 +15,24 @@ public class Equation {
 
     double d = b * b - 4 * a * c;
 
-    if (d > 0) {
-      n = 2;
-    } else {
-      if (d == 0) {
-        n = 1;
-      } else {
-        n = 0;
-      }
+    //неполная форма
+    if (a == 0) {
+      System.out.println("Это вырожденное уравнение");
+    }
+
+    //свернутая форма
+    if (d > 0) { n = 2; }
+    else if (d == 0) { n = 1; }
+    else { n = 0; }
+
+    //вложенная форма
+    if (d > 0) { n = 2; }
+    else { if (d == 0) { n = 1; }
+    else { n = 0; }
     }
   }
 
-  public int rootNunber(){
+  public int rootNunber() {
     return n;
   }
 }
