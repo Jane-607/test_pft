@@ -15,7 +15,8 @@ public class ContactCreationTests extends TestBase {
             "Orlova",
             "OOO Test",
             "84832121212",
-            "e.orlova@bk.ru"));
+            "e.orlova@bk.ru",
+            "test1"), true);
     app.getContactHelper().submitContactCreation();
     app.getContactHelper().returnToHomePage();
   }
