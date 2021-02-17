@@ -28,7 +28,7 @@ public class ApplicationManager {
     else if (browser.equals(BrowserType.FIREFOX)) { wd = new FirefoxDriver();}
     else if (browser.equals(BrowserType.IE)) { wd = new InternetExplorerDriver();}
 
-    wd.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+    //wd.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     wd.get("http://localhost/addressbook/group.php?selected%5B%5D=3&delete=Delete+group%28s%29");
     groupHelper = new GroupHelper(wd);
     contactHelper = new ContactHelper(wd);
