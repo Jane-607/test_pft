@@ -15,7 +15,8 @@ public class ContactModificationTests extends TestBase {
             "Orlova",
             "OOO Test",
             "84832121212",
-            "e.orlova@bk.ru"));
+            "e.orlova@bk.ru",
+            null),false);
     app.getContactHelper().submitContacModification();
     app.getContactHelper().returnToHomePage();
     }
