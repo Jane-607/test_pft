@@ -12,7 +12,6 @@ public class ContactCreationTests extends TestBase {
   @Test
   public void testContactCreation() {
 
-    app.getGroupHelper().returnToGroupPage();
     app.getNavigationHelper().gotoGroupPage();
     if (! app.getGroupHelper().isThereAGroup()){
       app.getGroupHelper().createGroup(new GroupDate("test1", null, null));
