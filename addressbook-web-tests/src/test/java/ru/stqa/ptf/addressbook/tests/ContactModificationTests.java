@@ -1,5 +1,6 @@
 package ru.stqa.ptf.addressbook.tests;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.ContactDate;
 import ru.stqa.ptf.addressbook.model.GroupDate;
@@ -26,6 +27,7 @@ public class ContactModificationTests extends TestBase {
               "test1"), true);
     }
     app.getNavigationHelper().returnToHomePage();
+    int before = app.getContactHelper().getContactCount();
     app.getContactHelper().initContactModification();
     app.getContactHelper().fillContactForm(new ContactDate(
             "Eva",
@@ -37,5 +39,7 @@ public class ContactModificationTests extends TestBase {
             null),false);
     app.getContactHelper().submitContacModification();
     app.getNavigationHelper().returnToHomePage();
+    int after = app.getContactHelper().getContactCount();
+    Assert.assertEquals(after, before);
     }
 }

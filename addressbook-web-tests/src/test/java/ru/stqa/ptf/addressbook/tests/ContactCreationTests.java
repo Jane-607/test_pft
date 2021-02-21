@@ -1,7 +1,5 @@
 package ru.stqa.ptf.addressbook.tests;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.ContactDate;
@@ -13,10 +11,11 @@ public class ContactCreationTests extends TestBase {
   public void testContactCreation() {
 
     app.getNavigationHelper().gotoGroupPage();
-    if (! app.getGroupHelper().isThereAGroup()){
+    if (!app.getGroupHelper().isThereAGroup()) {
       app.getGroupHelper().createGroup(new GroupDate("test1", null, null));
     }
     app.getNavigationHelper().returnToHomePage();
+    int before = app.getContactHelper().getContactCount();
     app.getContactHelper().createContact(new ContactDate(
             "Eva",
             "Victorovna",
@@ -26,5 +25,7 @@ public class ContactCreationTests extends TestBase {
             "e.orlova@bk.ru",
             "test1"), true);
     app.getNavigationHelper().returnToHomePage();
+    int after = app.getContactHelper().getContactCount();
+    Assert.assertEquals(after, before + 1);
   }
 }
