@@ -12,7 +12,9 @@ public class ContactHelper extends HelperBase {
     super(wd);
   }
 
-  public void submitContactCreation() { click(By.name("submit")); }
+  public void submitContactCreation() {
+    click(By.name("submit"));
+  }
 
   public void fillContactForm(ContactDate contactDate, boolean creation) {
     type(By.name("firstname"), contactDate.getFirstName());
@@ -37,13 +39,17 @@ public class ContactHelper extends HelperBase {
     click(By.xpath("//input[@value='Delete']"));
   }
 
-  public void selectContact() {
-    click(By.name("selected[]"));
+  public void selectContact(int index) {
+    wd.findElements(By.name("selected[]")).get(index).click();
   }
 
-  public void initContactModification() { click(By.xpath("//img[@alt='Edit']")); }
+  public void initContactModification(int index) {
+    wd.findElements(By.xpath("//img[@alt='Edit']")).get(index).click();
+  }
 
-  public void submitContacModification() {click(By.name("update")); }
+  public void submitContacModification() {
+    click(By.name("update"));
+  }
 
   public void createContact(ContactDate contact, boolean b) {
     initContactCreation();
