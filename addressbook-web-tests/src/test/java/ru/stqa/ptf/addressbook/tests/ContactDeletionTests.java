@@ -17,17 +17,17 @@ public class ContactDeletionTests extends TestBase {
     app.getNavigationHelper().returnToHomePage();
     if (!app.getContactHelper().isThereAContact()) {
       app.getContactHelper().createContact(new ContactDate(
-              "Eva",
-              "Victorovna",
-              "Orlova",
-              "OOO Test",
+              "Eva_2",
+              "Victorovna_2",
+              "Orlova_2",
+              "OOO Test_2",
               "84832121212",
-              "e.orlova@bk.ru",
+              "e.orlova_2@bk.ru",
               "test1"), true);
     }
     app.getNavigationHelper().returnToHomePage();
     int before = app.getContactHelper().getContactCount();
-    app.getContactHelper().selectContact();
+    app.getContactHelper().selectContact(before-1);
     app.getContactHelper().deleteSelectedContacts();
     app.getContactHelper().acceptNextAlert = true;
     app.getContactHelper().assertTrue(app.getContactHelper().closeAlertAndGetItsText().matches("^Delete 1 addresses[\\s\\S]$"));

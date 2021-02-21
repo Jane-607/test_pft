@@ -28,14 +28,14 @@ public class ContactModificationTests extends TestBase {
     }
     app.getNavigationHelper().returnToHomePage();
     int before = app.getContactHelper().getContactCount();
-    app.getContactHelper().initContactModification();
+    app.getContactHelper().initContactModification(before -1);
     app.getContactHelper().fillContactForm(new ContactDate(
-            "Eva",
-            "Victorovna",
-            "Orlova",
-            "OOO Test",
+            "Eva_3",
+            "Victorovna_3",
+            "Orlova_3",
+            "OOO Test_3",
             "84832121212",
-            "e.orlova@bk.ru",
+            "e.orlova_3@bk.ru",
             null),false);
     app.getContactHelper().submitContacModification();
     app.getNavigationHelper().returnToHomePage();
