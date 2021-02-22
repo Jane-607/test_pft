@@ -2,9 +2,13 @@ package ru.stqa.ptf.addressbook.appmanager;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
-import ru.stqa.ptf.addressbook.model.ContactDate;
+import ru.stqa.ptf.addressbook.model.ContactData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContactHelper extends HelperBase {
 
@@ -16,16 +20,16 @@ public class ContactHelper extends HelperBase {
     click(By.name("submit"));
   }
 
-  public void fillContactForm(ContactDate contactDate, boolean creation) {
-    type(By.name("firstname"), contactDate.getFirstName());
-    type(By.name("middlename"), contactDate.getMiddleName());
-    type(By.name("lastname"), contactDate.getLastName());
-    type(By.name("company"), contactDate.getCompany());
-    type(By.name("home"), contactDate.getHome());
-    type(By.name("email"), contactDate.getEmail());
+  public void fillContactForm(ContactData contactData, boolean creation) {
+    type(By.name("firstname"), contactData.getFirstName());
+    type(By.name("middlename"), contactData.getMiddleName());
+    type(By.name("lastname"), contactData.getLastName());
+    type(By.name("company"), contactData.getCompany());
+    type(By.name("home"), contactData.getHome());
+    type(By.name("email"), contactData.getEmail());
 
     if (creation) {
-      new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactDate.getGroup());
+      new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroup());
     } else {
       Assert.assertFalse(isElementPresent(By.name("new_group")));
     }
@@ -51,7 +55,7 @@ public class ContactHelper extends HelperBase {
     click(By.name("update"));
   }
 
-  public void createContact(ContactDate contact, boolean b) {
+  public void createContact(ContactData contact, boolean b) {
     initContactCreation();
     fillContactForm(contact, true);
     submitContactCreation();
@@ -63,6 +67,17 @@ public class ContactHelper extends HelperBase {
 
   public int getContactCount() {
     return wd.findElements(By.name("selected[]")).size();
+  }
+
+  public List<ContactData> getContactList() {
+    List<ContactData> contacts = new ArrayList<ContactData>();
+    List<WebElement> elements = wd.findElements(By.xpath("//*[@id=\"maintable\"]/tbody/tr[*]/td[3]"));
+    for (WebElement element : elements) {
+      String firstname = element.getText();
+      ContactData contact = new ContactData(firstname, "", null, null, null, null, null);
+      contacts.add(contact);
+    }
+    return contacts;
   }
 }
 

@@ -2,8 +2,10 @@ package ru.stqa.ptf.addressbook.tests;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import ru.stqa.ptf.addressbook.model.ContactDate;
-import ru.stqa.ptf.addressbook.model.GroupDate;
+import ru.stqa.ptf.addressbook.model.ContactData;
+import ru.stqa.ptf.addressbook.model.GroupData;
+
+import java.util.List;
 
 public class ContactModificationTests extends TestBase {
 
@@ -12,12 +14,12 @@ public class ContactModificationTests extends TestBase {
 
     app.getNavigationHelper().gotoGroupPage();
     if (!app.getGroupHelper().isThereAGroup()) {
-      app.getGroupHelper().createGroup(new GroupDate("test1", null, null));
+      app.getGroupHelper().createGroup(new GroupData("test1", null, null));
     }
 
     app.getNavigationHelper().returnToHomePage();
     if (!app.getContactHelper().isThereAContact()) {
-      app.getContactHelper().createContact(new ContactDate(
+      app.getContactHelper().createContact(new ContactData(
               "Eva",
               "Victorovna",
               "Orlova",
@@ -27,9 +29,9 @@ public class ContactModificationTests extends TestBase {
               "test1"), true);
     }
     app.getNavigationHelper().returnToHomePage();
-    int before = app.getContactHelper().getContactCount();
-    app.getContactHelper().initContactModification(before -1);
-    app.getContactHelper().fillContactForm(new ContactDate(
+    List<ContactData> before = app.getContactHelper().getContactList();
+    app.getContactHelper().initContactModification(before.size() -1);
+    app.getContactHelper().fillContactForm(new ContactData(
             "Eva_3",
             "Victorovna_3",
             "Orlova_3",
@@ -39,7 +41,7 @@ public class ContactModificationTests extends TestBase {
             null),false);
     app.getContactHelper().submitContacModification();
     app.getNavigationHelper().returnToHomePage();
-    int after = app.getContactHelper().getContactCount();
-    Assert.assertEquals(after, before);
+    List<ContactData> after = app.getContactHelper().getContactList();
+    Assert.assertEquals(after.size(), before.size());
     }
 }

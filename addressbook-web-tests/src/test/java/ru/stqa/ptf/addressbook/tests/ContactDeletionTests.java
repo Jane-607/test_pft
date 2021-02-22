@@ -2,8 +2,10 @@ package ru.stqa.ptf.addressbook.tests;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import ru.stqa.ptf.addressbook.model.ContactDate;
-import ru.stqa.ptf.addressbook.model.GroupDate;
+import ru.stqa.ptf.addressbook.model.ContactData;
+import ru.stqa.ptf.addressbook.model.GroupData;
+
+import java.util.List;
 
 public class ContactDeletionTests extends TestBase {
 
@@ -12,11 +14,11 @@ public class ContactDeletionTests extends TestBase {
 
     app.getNavigationHelper().gotoGroupPage();
     if (!app.getGroupHelper().isThereAGroup()) {
-      app.getGroupHelper().createGroup(new GroupDate("test1", null, null));
+      app.getGroupHelper().createGroup(new GroupData("test1", null, null));
     }
     app.getNavigationHelper().returnToHomePage();
     if (!app.getContactHelper().isThereAContact()) {
-      app.getContactHelper().createContact(new ContactDate(
+      app.getContactHelper().createContact(new ContactData(
               "Eva_2",
               "Victorovna_2",
               "Orlova_2",
@@ -26,14 +28,14 @@ public class ContactDeletionTests extends TestBase {
               "test1"), true);
     }
     app.getNavigationHelper().returnToHomePage();
-    int before = app.getContactHelper().getContactCount();
-    app.getContactHelper().selectContact(before-1);
+    List<ContactData> before = app.getContactHelper().getContactList();
+    app.getContactHelper().selectContact(before.size()-1);
     app.getContactHelper().deleteSelectedContacts();
     app.getContactHelper().acceptNextAlert = true;
     app.getContactHelper().assertTrue(app.getContactHelper().closeAlertAndGetItsText().matches("^Delete 1 addresses[\\s\\S]$"));
     app.getNavigationHelper().returnToHomePage();
-    int after = app.getContactHelper().getContactCount();
-    Assert.assertEquals(after, before - 1);
+    List<ContactData> after = app.getContactHelper().getContactList();
+    Assert.assertEquals(after.size(), before.size() - 1);
   }
 
 }

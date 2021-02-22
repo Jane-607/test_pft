@@ -2,8 +2,10 @@ package ru.stqa.ptf.addressbook.tests;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import ru.stqa.ptf.addressbook.model.ContactDate;
-import ru.stqa.ptf.addressbook.model.GroupDate;
+import ru.stqa.ptf.addressbook.model.ContactData;
+import ru.stqa.ptf.addressbook.model.GroupData;
+
+import java.util.List;
 
 public class ContactCreationTests extends TestBase {
 
@@ -12,11 +14,11 @@ public class ContactCreationTests extends TestBase {
 
     app.getNavigationHelper().gotoGroupPage();
     if (!app.getGroupHelper().isThereAGroup()) {
-      app.getGroupHelper().createGroup(new GroupDate("test1", null, null));
+      app.getGroupHelper().createGroup(new GroupData("test1", null, null));
     }
     app.getNavigationHelper().returnToHomePage();
-    int before = app.getContactHelper().getContactCount();
-    app.getContactHelper().createContact(new ContactDate(
+    List<ContactData> before = app.getContactHelper().getContactList();
+    app.getContactHelper().createContact(new ContactData(
             "Eva",
             "Victorovna",
             "Orlova",
@@ -25,7 +27,7 @@ public class ContactCreationTests extends TestBase {
             "e.orlova@bk.ru",
             "test1"), true);
     app.getNavigationHelper().returnToHomePage();
-    int after = app.getContactHelper().getContactCount();
-    Assert.assertEquals(after, before + 1);
+    List<ContactData> after = app.getContactHelper().getContactList();
+    Assert.assertEquals(after.size(), before.size() + 1);
   }
 }
