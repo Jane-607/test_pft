@@ -55,20 +55,21 @@ public class ContactHelper extends HelperBase {
     click(By.name("update"));
   }
 
-  public void createContact(ContactData contact, boolean b) {
+  public void create(ContactData contact, boolean b) {
     initContactCreation();
     fillContactForm(contact, true);
     submitContactCreation();
   }
 
-  public void deleteContact(int index) {
+  public void delete(int index) {
     selectContact(index);
     deleteSelectedContacts();
     acceptNextAlert = true;
     assertTrue(closeAlertAndGetItsText().matches("^Delete 1 addresses[\\s\\S]$"));
   }
 
-  public void modifyContact(ContactData contact) {
+  public void modifyContact(int index, ContactData contact) {
+    initContactModification(index);
     fillContactForm(contact, false);
     submitContacModification();
   }
@@ -81,7 +82,7 @@ public class ContactHelper extends HelperBase {
     return wd.findElements(By.name("selected[]")).size();
   }
 
-  public List<ContactData> getContactList() {
+  public List<ContactData> list() {
     List<ContactData> contacts = new ArrayList<ContactData>();
     List<WebElement> elements = wd.findElements(By.cssSelector("tr[name='entry']"));
     for (WebElement element : elements) {
