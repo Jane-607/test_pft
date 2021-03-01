@@ -17,7 +17,7 @@ public class ContactCreationTests extends TestBase {
     app.goTo().GroupPage();
 
     if (!app.group().isThereAGroup() || !app.group().GroupExists().equals("test1")) {
-      app.group().create(new GroupData("test1", null, null));
+      app.group().create(new GroupData().withName("test1").withHeader("test2").withFooter("test3"));
     }
   }
 
@@ -28,14 +28,8 @@ public class ContactCreationTests extends TestBase {
 
     List<ContactData> before = app.contact().list();
 
-    ContactData contact = new ContactData(
-            "Eva",
-            "Victorovna",
-            "Orlova",
-            "OOO Test",
-            "84832121212",
-            "e.orlova@bk.ru",
-            "test1");
+    ContactData contact = new ContactData()
+            .withFirstName("Eva").withMiddleName("Victorovna").withLastName("Orlova").withCompany("OOO Test").withHome("84832121212").withEmail("e.orlova@bk.ru").withGroup("test1");
 
     app.contact().create(contact, true);
     app.goTo().HomePage();
@@ -43,7 +37,7 @@ public class ContactCreationTests extends TestBase {
     List<ContactData> after = app.contact().list();
     Assert.assertEquals(after.size(), before.size() + 1);
 
-    contact.setId(after.stream().max(Comparator.comparingInt(ContactData::getId)).get().getId());
+    contact.withId(after.stream().max(Comparator.comparingInt(ContactData::getId)).get().getId());
 
     before.add(contact);
 

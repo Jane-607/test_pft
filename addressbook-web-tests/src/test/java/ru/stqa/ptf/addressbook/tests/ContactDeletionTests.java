@@ -17,23 +17,17 @@ public class ContactDeletionTests extends TestBase {
     app.goTo().GroupPage();
 
     if (app.group().list().size() == 0 || !app.group().GroupExists().equals("test1")) {
-      app.group().create(new GroupData("test1", null, null));
+      app.group().create(new GroupData().withName("test1"));
     }
 
     app.goTo().HomePage();
 
     if (app.contact().list().size() == 0) {
-      app.contact().create(new ContactData(
-              "Eva_2",
-              "Victorovna_2",
-              "Orlova_2",
-              "OOO Test_2",
-              "84832121212",
-              "e.orlova_2@bk.ru",
-              "test1"), true);
+      app.contact().create(new ContactData()
+              .withFirstName("Eva").withMiddleName("Victorovna").withLastName("Orlova").withCompany("OOO Test")
+              .withHome("84832121212").withEmail("e.orlova@bk.ru").withGroup("test1"), true);
     }
   }
-
   @Test
   public void testContactDeletion() {
 

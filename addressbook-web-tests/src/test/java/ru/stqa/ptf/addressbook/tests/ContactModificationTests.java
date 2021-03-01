@@ -17,20 +17,15 @@ public class ContactModificationTests extends TestBase {
     app.goTo().GroupPage();
 
     if (app.group().list().size() == 0) {
-      app.group().create(new GroupData("test1", null, null));
+      app.group().create(new GroupData().withName("test1").withHeader("test2").withFooter("test3"));
     }
 
     app.goTo().HomePage();
 
     if (app.contact().list().size() == 0) {
-      app.contact().create(new ContactData(
-              "Eva",
-              "Victorovna",
-              "Orlova",
-              "OOO Test",
-              "84832121212",
-              "e.orlova@bk.ru",
-              "test1"), true);
+      app.contact().create(new ContactData()
+              .withFirstName("Eva").withMiddleName("Victorovna").withLastName("Orlova").withCompany("OOO Test")
+              .withHome("84832121212").withEmail("e.orlova@bk.ru").withGroup("test1"), true);
     }
   }
 
@@ -42,14 +37,9 @@ public class ContactModificationTests extends TestBase {
     List<ContactData> before = app.contact().list();
     int index = before.size() - 1;
 
-    ContactData contact = new ContactData(before.get(index).getId(),
-            "Eva_3",
-            "Victorovna_3",
-            "Orlova_3",
-            "OOO Test_3",
-            "84832121212",
-            "e.orlova_3@bk.ru",
-            null);
+    ContactData contact = new ContactData()
+            .withId(before.get(index).getId()).withFirstName("Eva_3").withMiddleName("Victorovna_3").withLastName("Orlova_3")
+            .withCompany("OOO Test_3").withHome("84832121212").withEmail("e.orlova_3@bk.ru").withGroup(null);
 
     app.contact().modifyContact(index, contact);
     app.goTo().HomePage();
