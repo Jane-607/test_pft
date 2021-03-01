@@ -4,20 +4,20 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.BrowserType;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
 import ru.stqa.ptf.addressbook.appmanager.ApplicationManager;
 
 public class TestBase {
-  protected final ApplicationManager app = new ApplicationManager(BrowserType.CHROME);
+  protected static final ApplicationManager app = new ApplicationManager(BrowserType.CHROME);
   WebDriver wd;
 
-  @BeforeMethod(alwaysRun = true)
+  @BeforeSuite(alwaysRun = true)
   public void setUp() throws Exception {
     app.init();
   }
 
-  @AfterMethod(alwaysRun = true)
+  @AfterSuite(alwaysRun = true)
   public void tearDown() throws Exception {
     app.logout();
     app.stop();
