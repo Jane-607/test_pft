@@ -4,9 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.GroupData;
-
-import java.util.Comparator;
-import java.util.List;
+import java.util.Set;
 
 public class GroupDeletionTests extends TestBase {
 
@@ -15,7 +13,7 @@ public class GroupDeletionTests extends TestBase {
 
     app.goTo().GroupPage();
 
-    if (app.group().list().size() == 0) {
+    if (app.group().all().size() == 0) {
       app.group().create(new GroupData().withName("test1").withHeader("test2").withFooter("test3"));
     }
   }
@@ -23,21 +21,15 @@ public class GroupDeletionTests extends TestBase {
   @Test
   public void testGroupDeletion() {
 
-    List<GroupData> before = app.group().list();
-    int index = before.size() - 1;
+    Set<GroupData> before = app.group().all();
+    GroupData deletedGroup = before.iterator().next();
 
-    app.group().delete(index);
+    app.group().delete(deletedGroup);
 
-    List<GroupData> after = app.group().list();
-    Assert.assertEquals(after.size(), index);
+    Set<GroupData> after = app.group().all();
+    Assert.assertEquals(after.size(), before.size()-1);
 
-    before.remove(index);
-
-    Comparator<? super GroupData> byId = Comparator.comparingInt(GroupData::getId);
-
-    before.sort(byId);
-    after.sort(byId);
-
+    before.remove(deletedGroup);
     Assert.assertEquals(after, before);
   }
 }
