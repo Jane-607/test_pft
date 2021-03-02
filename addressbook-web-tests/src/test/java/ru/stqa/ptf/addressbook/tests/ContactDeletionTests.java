@@ -5,9 +5,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.GroupData;
-
-import java.util.Comparator;
-import java.util.List;
+import java.util.Set;
 
 public class ContactDeletionTests extends TestBase {
 
@@ -16,13 +14,13 @@ public class ContactDeletionTests extends TestBase {
 
     app.goTo().GroupPage();
 
-    if (app.group().list().size() == 0 || !app.group().GroupExists().equals("test1")) {
+    if (app.group().all().size() == 0 || !app.group().GroupExists().equals("test1")) {
       app.group().create(new GroupData().withName("test1"));
     }
 
     app.goTo().HomePage();
 
-    if (app.contact().list().size() == 0) {
+    if (app.contact().all().size() == 0) {
       app.contact().create(new ContactData()
               .withFirstName("Eva").withMiddleName("Victorovna").withLastName("Orlova").withCompany("OOO Test")
               .withHome("84832121212").withEmail("e.orlova@bk.ru").withGroup("test1"), true);
@@ -33,22 +31,16 @@ public class ContactDeletionTests extends TestBase {
 
     app.goTo().HomePage();
 
-    List<ContactData> before = app.contact().list();
-    int index = before.size() - 1;
+    Set<ContactData> before = app.contact().all();
+    ContactData deletedContact = before.iterator().next();
 
-    app.contact().delete(index);
+    app.contact().delete(deletedContact);
     app.goTo().HomePage();
 
-    List<ContactData> after = app.contact().list();
-    Assert.assertEquals(after.size(), index);
+    Set<ContactData> after = app.contact().all();
+    Assert.assertEquals(after.size(), before.size()-1);
 
-    before.remove(index);
-
-    Comparator<? super ContactData> byId = Comparator.comparingInt(ContactData::getId);
-
-    before.sort(byId);
-    after.sort(byId);
-
+    before.remove(deletedContact );
     Assert.assertEquals(after, before);
   }
 
