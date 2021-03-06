@@ -14,7 +14,9 @@ public class ContactData {
   private String group;
 
 
-  public int getId() { return id; }
+  public int getId() {
+    return id;
+  }
 
   public ContactData withId(int id) {
     this.id = id;
@@ -68,22 +70,28 @@ public class ContactData {
     return lastName;
   }
 
-  public String getCompany() { return company; }
+  public String getCompany() {
+    return company;
+  }
 
-  public String getHome() { return home; }
+  public String getHome() {
+    return home;
+  }
 
-  public String getEmail() { return email; }
-
-  public String getGroup() { return group; }
-
+  public String getEmail() {
+    return email;
+  }
 
   @Override
   public String toString() {
     return "ContactData{" +
-            "id='" + id + '\'' +
+            "id=" + id +
             ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
             '}';
+  }
+
+  public String getGroup() {
+    return group;
   }
 
   @Override
@@ -91,12 +99,13 @@ public class ContactData {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ContactData that = (ContactData) o;
-    return Objects.equals(firstName, that.firstName);
+    return id == that.id && Objects.equals(firstName, that.firstName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(firstName);
+    return Objects.hash(id, firstName);
   }
+
 }
 
