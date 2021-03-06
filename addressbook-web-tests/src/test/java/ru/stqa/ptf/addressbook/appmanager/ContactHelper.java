@@ -7,9 +7,10 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.Contacts;
-import ru.stqa.ptf.addressbook.model.Groups;
 
 import java.util.List;
+
+import static org.testng.Assert.assertFalse;
 
 public class ContactHelper extends HelperBase {
 
@@ -31,9 +32,7 @@ public class ContactHelper extends HelperBase {
 
     if (creation) {
       new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroup());
-    } else {
-      Assert.assertFalse(isElementPresent(By.name("new_group")));
-    }
+    } else assertFalse(isElementPresent(By.name("new_group")));
   }
 
   public void initContactCreation() {
@@ -78,7 +77,7 @@ public class ContactHelper extends HelperBase {
     contactCache =null;
   }
 
-  public int getContactCount() {
+  public int count() {
     return wd.findElements(By.name("selected[]")).size();
   }
 

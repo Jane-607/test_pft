@@ -17,7 +17,7 @@ public class ContactModificationTests extends TestBase {
 
     app.goTo().GroupPage();
 
-    if (app.group().all().size() == 0) {
+    if (app.group().all().size() == 0 || !app.group().GroupExists().equals("test1")) {
       app.group().create(new GroupData().withName("test1").withHeader("test2").withFooter("test3"));
     }
 
@@ -44,10 +44,9 @@ public class ContactModificationTests extends TestBase {
 
     app.contact().modify(contact);
     app.goTo().HomePage();
+    assertThat(app.contact().count(), equalTo(before.size()));
 
     Contacts after = app.contact().all();
-    assertEquals(after.size(), before.size());
-
     assertThat(after, equalTo(before.without(modifiedContact).withAdded(contact)));
   }
 }
