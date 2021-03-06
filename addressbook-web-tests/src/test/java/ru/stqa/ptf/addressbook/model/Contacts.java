@@ -28,8 +28,15 @@ public class Contacts extends ForwardingSet<ContactData> {
     return contacts;
   }
 
+  public Contacts infoFromEditForm(ContactData contact) {
+    Contacts contacts = new Contacts(this);
+    contacts.remove(contact);
+    return contacts;
+  }
+
   @Override
   protected Set<ContactData> delegate() {
     return delegate;
   }
+
 }

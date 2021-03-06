@@ -48,6 +48,16 @@ public class ContactData {
     return this;
   }
 
+  public ContactData withMobile (String mobile) {
+    this.home = mobile;
+    return this;
+  }
+
+  public ContactData withWork (String work) {
+    this.home = work;
+    return this;
+  }
+
   public ContactData withEmail(String email) {
     this.email = email;
     return this;
