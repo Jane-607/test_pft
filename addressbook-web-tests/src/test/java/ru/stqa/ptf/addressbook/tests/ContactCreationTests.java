@@ -8,7 +8,6 @@ import ru.stqa.ptf.addressbook.model.GroupData;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.testng.Assert.assertEquals;
 
 public class ContactCreationTests extends TestBase {
 
@@ -30,7 +29,12 @@ public class ContactCreationTests extends TestBase {
     Contacts before = app.contact().all();
 
     ContactData contact = new ContactData()
-            .withFirstName("Eva").withMiddleName("Victorovna").withLastName("Orlova").withCompany("OOO Test").withHome("84832121212").withEmail("e.orlova@bk.ru").withGroup("test1");
+            .withFirstName("Eva").withMiddleName("Victorovna").withLastName("Orlova").withCompany("OOO Test")
+            .withAddress("Проживание: г. Москва, Ново-Советская, д.123/3, кв. 125(а);\n"
+                    + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
+            .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
+            .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
+            .withGroup("test1");
 
     app.contact().create(contact, true);
     app.goTo().HomePage();
