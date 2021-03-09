@@ -1,5 +1,6 @@
 package ru.stqa.ptf.addressbook.model;
 
+import java.io.File;
 import java.util.Objects;
 
 public class ContactData {
@@ -17,19 +18,17 @@ public class ContactData {
   private String email2;
   private String email3;
   private String group;
+  private File photo;
 
   private String allPhones;
   private String allEmails;
 
 
-  public int getId() {
-    return id;
-  }
-
   public ContactData withId(int id) { this.id = id; return this; }
   public ContactData withFirstName(String firstName) { this.firstName = firstName; return this; }
   public ContactData withMiddleName(String middleName) { this.middleName = middleName; return this; }
   public ContactData withLastName(String lastName) { this.lastName = lastName; return this; }
+  public ContactData withPhoto(File photo) { this.photo = photo; return this; }
   public ContactData withCompany(String company) { this.company = company; return this; }
   public ContactData withAddress(String address) { this.address = address; return this; }
   public ContactData withHome(String home) { this.home = home; return this; }
@@ -43,9 +42,13 @@ public class ContactData {
   public ContactData withAllPhones(String allPhones) { this.allPhones = allPhones; return this;}
   public ContactData withAllEmails(String allEmails) { this.allEmails = allEmails; return this; }
 
+  public int getId() {
+    return id;
+  }
   public String getFirstName() { return firstName; }
   public String getMiddleName() { return middleName; }
   public String getLastName() { return lastName; }
+  public File getPhoto() { return photo; }
   public String getCompany() { return company; }
   public String getAddress() { return address; }
   public String getEmail() { return email; }
@@ -54,6 +57,10 @@ public class ContactData {
   public String getHome() { return home; }
   public String getMobile() { return mobile; }
   public String getWork() { return work; }
+  public String getGroup() {
+    return group;
+  }
+
 
   public String getAllPhones() { return allPhones; }
   public String getAllEmails() { return allEmails; }
@@ -67,9 +74,6 @@ public class ContactData {
             '}';
   }
 
-  public String getGroup() {
-    return group;
-  }
 
   @Override
   public boolean equals(Object o) {

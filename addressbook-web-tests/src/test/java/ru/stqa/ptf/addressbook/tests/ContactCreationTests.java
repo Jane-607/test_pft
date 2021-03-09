@@ -6,6 +6,8 @@ import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.Contacts;
 import ru.stqa.ptf.addressbook.model.GroupData;
 
+import java.io.File;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -28,13 +30,16 @@ public class ContactCreationTests extends TestBase {
 
     Contacts before = app.contact().all();
 
+    File photo = new File("src/test/resources/file.png");
+
     ContactData contact = new ContactData()
             .withFirstName("Eva").withMiddleName("Victorovna").withLastName("Orlova").withCompany("OOO Test")
             .withAddress("Проживание: г. Москва, Ново-Советская, д.123/3, кв. 125(а);\n"
                     + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
             .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
             .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
-            .withGroup("test1");
+            .withGroup("test1")
+            .withPhoto(photo);
 
     app.contact().create(contact, true);
     app.goTo().HomePage();
@@ -42,10 +47,11 @@ public class ContactCreationTests extends TestBase {
 
     Contacts after = app.contact().all();
     assertThat(after, equalTo(
-            before.withAdded(contact.withId(after.stream().mapToInt((g) -> g.getId()).max().getAsInt()))));
+         before.withAdded(contact.withId(after.stream().mapToInt((g) -> g.getId()).max().getAsInt()))));
   }
 
-  @Test
+
+  @Test(enabled = false)
   public void testBadContactCreation() {
 
     app.goTo().HomePage();
