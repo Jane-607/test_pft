@@ -43,6 +43,7 @@ public class ContactModificationTests extends TestBase {
             .withCompany("OOO Test_3").withHome("84832121212").withEmail("e.orlova_3@bk.ru").withGroup(null);
 
     app.contact().modify(contact);
+
     app.goTo().HomePage();
     assertThat(app.contact().count(), equalTo(before.size()));
 

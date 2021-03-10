@@ -17,15 +17,58 @@ public class ContactHelper extends HelperBase {
     super(wd);
   }
 
-  public void submitContactCreation() {
-    click(By.name("submit"));
+  public void create(ContactData contact, boolean b) {
+    initContactCreation();
+    fillContactForm(contact, true);
+    submitContactCreation();
+    contactCache = null;
   }
+
+  public void initContactCreation() { click(By.linkText("add new")); }
+  public void submitContactCreation() { click(By.name("submit")); }
+
+
+  public void delete(ContactData contact) {
+    selectContactById(contact.getId());
+    deleteSelectedContacts();
+    acceptNextAlert = true;
+    assertTrue(closeAlertAndGetItsText().matches("^Delete 1 addresses[\\s\\S]$"));
+    contactCache = null;
+  }
+
+  public void selectContactById(int id) { wd.findElement(By.cssSelector("input[value='" + id + "']")).click(); }
+  public void deleteSelectedContacts() {
+    click(By.xpath("//input[@value='Delete']"));
+  }
+
+
+  public void modify(ContactData contact) {
+    initContactModificationById(contact.getId());
+    fillContactForm(contact, false);
+    submitContacModification();
+    contactCache = null;
+  }
+
+  //public void initContactModification() { click(By.xpath("//img[@alt='Edit']")); }
+  private void initContactModificationById(int id) {
+    WebElement checkbox = wd.findElement(By.cssSelector(String.format(("input[value='%s']"), id)));
+    System.out.println(id);
+    WebElement element = checkbox.findElement(By.xpath("./../.."));
+    List<WebElement> cells = element.findElements((By.tagName("td")));
+    cells.get(7).findElement(By.tagName("a")).click();
+
+    // wd.findElement(By.xpath(String.format("input[value='%s']/../../td[8]/a",id))).click();
+    // wd.findElement(By.xpath(String.format("//tr[.//input[value='%s']]td[8]/a",id))).click();
+    // wd.findElement(By.cssSelector(String.format("a[href='edit.php?id=%s]'",id))).click();
+    }
+
+  public void submitContacModification() { click(By.name("update")); }
 
   public void fillContactForm(ContactData contactData, boolean creation) {
     type(By.name("firstname"), contactData.getFirstName());
     type(By.name("middlename"), contactData.getMiddleName());
     type(By.name("lastname"), contactData.getLastName());
-    attach (By.name("photo"), contactData.getPhoto());
+    //attach (By.name("photo"), contactData.getPhoto());
     type(By.name("company"), contactData.getCompany());
     type(By.name("address"), contactData.getAddress());
     type(By.name("home"), contactData.getHome());
@@ -39,6 +82,7 @@ public class ContactHelper extends HelperBase {
       new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroup());
     } else assertFalse(isElementPresent(By.name("new_group")));
   }
+
 
   public ContactData infoFromEditForm(ContactData contact) {
     initContactModificationById(contact.getId());
@@ -58,62 +102,8 @@ public class ContactHelper extends HelperBase {
             .withEmail(email).withEmail2(email2).withEmail3(email3);
   }
 
-  private void initContactModificationById(int id) {
-    WebElement checkbox = wd.findElement(By.cssSelector(String.format(("input[value='%s']"), id)));
-    WebElement element = checkbox.findElement(By.xpath("./../.."));
-    List<WebElement> cells = element.findElements((By.tagName("td")));
-    cells.get(7).findElement(By.tagName("a")).click();
 
-   // wd.findElement(By.xpath(String.format("input[value='%s']/../../td[8]/a",id))).click();
-   // wd.findElement(By.xpath(String.format("//tr[.//input[value='%s']]td[8]/a",id))).click();
-   // wd.findElement(By.cssSelector(String.format("a[href='edit.php?id=%s]'",id))).click();
-  }
-
-  public void initContactCreation() {
-    click(By.linkText("add new"));
-  }
-
-  public void deleteSelectedContacts() {
-    click(By.xpath("//input[@value='Delete']"));
-  }
-
-  public void selectContactById(int id) {
-    wd.findElement(By.cssSelector("input[value='" + id + "']")).click();
-  }
-
-  public void initContactModification() {
-    click(By.xpath("//img[@alt='Edit']"));
-  }
-
-  public void submitContacModification() {
-    click(By.name("update"));
-  }
-
-  public void create(ContactData contact, boolean b) {
-    initContactCreation();
-    fillContactForm(contact, true);
-    submitContactCreation();
-    contactCache = null;
-  }
-
-  public void delete(ContactData contact) {
-    selectContactById(contact.getId());
-    deleteSelectedContacts();
-    acceptNextAlert = true;
-    assertTrue(closeAlertAndGetItsText().matches("^Delete 1 addresses[\\s\\S]$"));
-    contactCache = null;
-  }
-
-  public void modify(ContactData contact) {
-    initContactModification();
-    fillContactForm(contact, false);
-    submitContacModification();
-    contactCache = null;
-  }
-
-  public int count() {
-    return wd.findElements(By.name("selected[]")).size();
-  }
+  public int count() { return wd.findElements(By.name("selected[]")).size(); }
 
   private Contacts contactCache = null;
 
