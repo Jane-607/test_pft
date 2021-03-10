@@ -7,7 +7,7 @@ import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.Contacts;
 import ru.stqa.ptf.addressbook.model.GroupData;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,39 +28,28 @@ public class ContactCreationTests extends TestBase {
   }
 
   @DataProvider
-  public Iterator <Object []> validContacts () {
-    List<Object []> list = new ArrayList<Object []>();
-    list.add(new Object[]{new ContactData()
-            .withFirstName("Eva_1").withMiddleName("Victorovna_1").withLastName("Orlova_1")
-            .withCompany("OOO Test")
-            .withAddress("Проживание: г. Москва, Ново-Советская, д.123/3, кв. 125(а);\n"
-                    + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
-            .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
-            .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
-            .withGroup("test1")});
+  public Iterator<Object[]> validContacts() throws IOException {
+    List<Object[]> list = new ArrayList<Object[]>();
+    BufferedReader reader = new BufferedReader(new FileReader(new File("src/test/resources/contacts.csv")));
+    String line = reader.readLine();
 
-    list.add(new Object[]{new ContactData()
-            .withFirstName("Eva_2").withMiddleName("Victorovna_2").withLastName("Orlova_2")
-            .withCompany("OOO Test")
-            .withAddress("Проживание: г. Москва, Ново-Советская, д.123/3, кв. 125(а);\n"
-                    + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
-            .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
-            .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
-            .withGroup("test1")});
+    while (line != null) {
+      String[] split = line.split(";");
+      list.add(new Object[]{new ContactData()
+              .withFirstName(split[0]).withMiddleName(split[1]).withLastName(split[2])
+              .withCompany("OOO Test")
+              .withAddress("Проживание: г. Москва, Ново-Советская, д.123/3, кв. 125(а);\n"
+                      + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
+              .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
+              .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
+              .withGroup("test1")});
+      line = reader.readLine();
+    }
 
-    list.add(new Object[]{new ContactData()
-            .withFirstName("Eva_3").withMiddleName("Victorovna_3").withLastName("Orlova_3")
-            .withCompany("OOO Test")
-            .withAddress("Проживание: г. Москва, Ново-Советская, д.123/3, кв. 125(а);\n"
-                    + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
-            .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
-            .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
-            .withGroup("test1")});
-
-    return  list.iterator();
+    return list.iterator();
   }
 
-  @Test (dataProvider = "validContacts")
+  @Test(dataProvider = "validContacts")
   public void testContactCreation(ContactData contact) {
 
     app.goTo().HomePage();
@@ -75,7 +64,7 @@ public class ContactCreationTests extends TestBase {
 
     Contacts after = app.contact().all();
     assertThat(after, equalTo(
-         before.withAdded(contact.withId(after.stream().mapToInt((g) -> g.getId()).max().getAsInt()))));
+            before.withAdded(contact.withId(after.stream().mapToInt((g) -> g.getId()).max().getAsInt()))));
   }
 
 
@@ -88,7 +77,8 @@ public class ContactCreationTests extends TestBase {
 
     ContactData contact = new ContactData()
             .withFirstName("Error'").withMiddleName("Error").withLastName("Error").withCompany("Error")
-            .withHome("84832121212").withEmail("Error").withGroup("test1");;
+            .withHome("84832121212").withEmail("Error").withGroup("test1");
+    ;
 
     app.contact().create(contact, true);
     app.goTo().HomePage();
