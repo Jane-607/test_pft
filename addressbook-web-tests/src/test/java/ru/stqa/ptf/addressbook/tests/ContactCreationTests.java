@@ -1,12 +1,16 @@
 package ru.stqa.ptf.addressbook.tests;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.Contacts;
 import ru.stqa.ptf.addressbook.model.GroupData;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,23 +27,47 @@ public class ContactCreationTests extends TestBase {
     }
   }
 
-  @Test
-  public void testContactCreation() {
+  @DataProvider
+  public Iterator <Object []> validContacts () {
+    List<Object []> list = new ArrayList<Object []>();
+    list.add(new Object[]{new ContactData()
+            .withFirstName("Eva_1").withMiddleName("Victorovna_1").withLastName("Orlova_1")
+            .withCompany("OOO Test")
+            .withAddress("Проживание: г. Москва, Ново-Советская, д.123/3, кв. 125(а);\n"
+                    + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
+            .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
+            .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
+            .withGroup("test1")});
+
+    list.add(new Object[]{new ContactData()
+            .withFirstName("Eva_2").withMiddleName("Victorovna_2").withLastName("Orlova_2")
+            .withCompany("OOO Test")
+            .withAddress("Проживание: г. Москва, Ново-Советская, д.123/3, кв. 125(а);\n"
+                    + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
+            .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
+            .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
+            .withGroup("test1")});
+
+    list.add(new Object[]{new ContactData()
+            .withFirstName("Eva_3").withMiddleName("Victorovna_3").withLastName("Orlova_3")
+            .withCompany("OOO Test")
+            .withAddress("Проживание: г. Москва, Ново-Советская, д.123/3, кв. 125(а);\n"
+                    + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
+            .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
+            .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
+            .withGroup("test1")});
+
+    return  list.iterator();
+  }
+
+  @Test (dataProvider = "validContacts")
+  public void testContactCreation(ContactData contact) {
 
     app.goTo().HomePage();
 
     Contacts before = app.contact().all();
 
-    File photo = new File("src/test/resources/file.png");
-
-    ContactData contact = new ContactData()
-            .withFirstName("Eva").withMiddleName("Victorovna").withLastName("Orlova").withCompany("OOO Test")
-            .withAddress("Проживание: г. Москва, Ново-Советская, д.123/3, кв. 125(а);\n"
-                    + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
-            .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
-            .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
-            .withGroup("test1");
-            //.withPhoto(photo);
+    //File photo = new File("src/test/resources/file.png");
 
     app.contact().create(contact, true);
     app.goTo().HomePage();
