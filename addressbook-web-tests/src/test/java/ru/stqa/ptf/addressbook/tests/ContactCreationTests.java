@@ -38,8 +38,8 @@ public class ContactCreationTests extends TestBase {
                     + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
             .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
             .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
-            .withGroup("test1")
-            .withPhoto(photo);
+            .withGroup("test1");
+            //.withPhoto(photo);
 
     app.contact().create(contact, true);
     app.goTo().HomePage();
