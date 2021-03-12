@@ -81,10 +81,12 @@ public class ContactHelper extends HelperBase {
 
 
     if (creation) {
-      new Select(wd.findElement(By.name("new_group"))).selectByVisibleText("test1");
+      String text = contactData.getGroup();
+      if (text != null) {
+        new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(text);
+      }
     } else assertFalse(isElementPresent(By.name("new_group")));
   }
-
 
   public ContactData infoFromEditForm(ContactData contact) {
     initContactModificationById(contact.getId());

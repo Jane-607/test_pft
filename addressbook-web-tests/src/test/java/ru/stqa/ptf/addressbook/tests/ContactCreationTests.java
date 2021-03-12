@@ -1,5 +1,7 @@
 package ru.stqa.ptf.addressbook.tests;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.thoughtworks.xstream.XStream;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -9,7 +11,6 @@ import ru.stqa.ptf.addressbook.model.Contacts;
 import ru.stqa.ptf.addressbook.model.GroupData;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,22 +31,13 @@ public class ContactCreationTests extends TestBase {
   }
 
   @DataProvider
-  public Iterator<Object[]> validContacts() throws IOException {
+  public Iterator<Object[]> validContactsFromXml() throws IOException {
     BufferedReader reader = new BufferedReader(new FileReader(new File("src/test/resources/contacts.xml")));
     String xml = "";
     String line = reader.readLine();
 
     while (line != null) {
       xml += line;
-      //String[] split = line.split(";");
-      //list.add(new Object[]{new ContactData()
-             // .withFirstName(split[0]).withMiddleName(split[1]).withLastName(split[2])
-             // .withCompany("OOO Test")
-             // .withAddress("Проживание: г. Москва, Ново-Советская, д.123/3, кв. 125(а);\n"
-             //         + "Регистрация: г. Орел, пр-т Ленина, д. 7 корп. 2, кв. 5.")
-             // .withHome("+7(111)11-11-23").withMobile("8-4832-12-12-12").withWork("8 900 354 33 45")
-             // .withEmail("E.orlova_1@bk.ru").withEmail2("Е.Орлова-2@письмо.рф").withEmail3("e.orlova.3000@bk.ru")
-             // .withGroup("test1")});
       line = reader.readLine();
     }
     XStream xstream = new XStream();
@@ -54,7 +46,22 @@ public class ContactCreationTests extends TestBase {
     return contacts.stream().map((g) -> new Object[] {g}).collect(Collectors.toList()).iterator();
   }
 
-  @Test(dataProvider = "validContacts")
+  @DataProvider
+  public Iterator<Object[]> validContactsFromJson() throws IOException {
+    BufferedReader reader = new BufferedReader(new FileReader(new File("src/test/resources/contacts.json")));
+    String json = "";
+    String line = reader.readLine();
+    while (line != null) {
+      json += line;
+      line = reader.readLine();
+    }
+    Gson gson = new Gson();
+    List<ContactData> contacts = gson.fromJson(json, new TypeToken<List<ContactData>>(){}.getType());
+    return contacts.stream().map((g) -> new Object[] {g}).collect(Collectors.toList()).iterator();
+  }
+
+
+  @Test(dataProvider = "validContactsFromJson")
   public void testContactCreation(ContactData contact) {
 
     app.goTo().HomePage();
