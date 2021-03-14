@@ -11,6 +11,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ContactAddressTest extends TestBase {
 
+  public static String cleanedAddress(String address) {
+    return address.replaceAll("[^a-z.а-я:/();\\n\\s,A-Z_А-Я@0-9-]", "");
+
+  }
+
   @Test
   public void testContactAddress() {
     app.goTo().HomePage();
@@ -26,11 +31,6 @@ public class ContactAddressTest extends TestBase {
             .stream().filter((s) -> !s.equals(""))
             .map(ContactAddressTest::cleanedAddress)
             .collect(Collectors.joining("\n"));
-  }
-
-  public static String cleanedAddress(String address) {
-    return address.replaceAll("[^a-z.а-я:/();\\n\\s,A-Z_А-Я@0-9-]", "");
-
   }
 
 }

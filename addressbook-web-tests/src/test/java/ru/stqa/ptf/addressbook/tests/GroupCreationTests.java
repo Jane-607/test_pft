@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
 import ru.stqa.ptf.addressbook.model.GroupData;
 import ru.stqa.ptf.addressbook.model.Groups;
 
@@ -46,35 +47,25 @@ public class GroupCreationTests extends TestBase {
 
   @Test(dataProvider = "validGroupsFromJson")
   public void testGroupCreation(GroupData group) {
-
     app.goTo().GroupPage();
-
     Groups before = app.group().all();
-
     app.group().create(group);
     app.goTo().GroupPage();
     assertThat(app.group().count(), equalTo(before.size() + 1));
-
     Groups after = app.group().all();
     assertThat(after, equalTo(
             before.withAdded(group.withId(after.stream().mapToInt((g) -> g.getId()).max().getAsInt()))));
   }
 
-  @Test
+  @Test(enabled = false)
   public void testBadGroupCreation() {
-
     app.goTo().GroupPage();
-
     Groups before = app.group().all();
-
     GroupData group = new GroupData().withName(properties.getProperty("web.BadGroupName"));
     assertThat(app.group().count(), equalTo(before.size()));
-
     app.group().create(group);
     app.goTo().GroupPage();
-
     Groups after = app.group().all();
     assertThat(after, equalTo(before));
   }
-
 }
