@@ -11,6 +11,7 @@ import ru.stqa.ptf.addressbook.appmanager.ApplicationManager;
 public class TestBase {
   protected static final ApplicationManager app
           = new ApplicationManager(System.getProperty("browser", BrowserType.CHROME));
+
   WebDriver wd;
 
   @BeforeSuite(alwaysRun = true)

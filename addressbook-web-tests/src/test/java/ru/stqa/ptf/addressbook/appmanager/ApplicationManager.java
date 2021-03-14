@@ -14,9 +14,6 @@ import java.util.Properties;
 
 public class ApplicationManager {
 
-  private final
-  Properties properties;
-
   WebDriver wd;
 
   private NavigationHelper navigationHelper;
@@ -24,6 +21,8 @@ public class ApplicationManager {
   private ContactHelper contactHelper;
   private SessionHelper sessionHelper;
   private String browser;
+
+  private final Properties properties;
 
   public ApplicationManager(String browser) {
     this.browser = browser;

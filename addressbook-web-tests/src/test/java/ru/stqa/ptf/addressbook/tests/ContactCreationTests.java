@@ -13,6 +13,7 @@ import ru.stqa.ptf.addressbook.model.GroupData;
 import java.io.*;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -20,31 +21,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ContactCreationTests extends TestBase {
 
-  @BeforeMethod
-  public void ensurePreconditions() {
+  private final Properties properties;
 
-    app.goTo().GroupPage();
-
-    if (!app.group().isThereAGroup() || !app.group().GroupExists().equals("test1")) {
-      app.group().create(new GroupData().withName("test1").withHeader("test2").withFooter("test3"));
-    }
-  }
-
-  @DataProvider
-  public Iterator<Object[]> validContactsFromXml() throws IOException {
-    try (BufferedReader reader = new BufferedReader(new FileReader(new File("src/test/resources/contacts.xml")))) {
-      String xml = "";
-      String line = reader.readLine();
-
-      while (line != null) {
-        xml += line;
-        line = reader.readLine();
-      }
-      XStream xstream = new XStream();
-      xstream.processAnnotations(ContactData.class);
-      List<ContactData> contacts = (List<ContactData>) xstream.fromXML(xml);
-      return contacts.stream().map((g) -> new Object[]{g}).collect(Collectors.toList()).iterator();
-    }
+  public ContactCreationTests() throws IOException {
+    properties = new Properties();
+    String target = System.getProperty("target", "local");
+    properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
   }
 
   @DataProvider
@@ -60,6 +42,19 @@ public class ContactCreationTests extends TestBase {
       List<ContactData> contacts = gson.fromJson(json, new TypeToken<List<ContactData>>() {
       }.getType());
       return contacts.stream().map((g) -> new Object[]{g}).collect(Collectors.toList()).iterator();
+    }
+  }
+
+  @BeforeMethod
+  public void ensurePreconditions() {
+
+    app.goTo().GroupPage();
+
+    if (!app.group().isThereAGroup() || !app.group().GroupExists().equals("test1")) {
+      app.group().create(new GroupData()
+              .withName(properties.getProperty("web.FirstGroupName"))
+              .withHeader(properties.getProperty("web.GroupHeadere"))
+              .withFooter(properties.getProperty("web.GroupFooter")));
     }
   }
 
@@ -83,7 +78,7 @@ public class ContactCreationTests extends TestBase {
   }
 
 
-  @Test(enabled = false)
+  @Test
   public void testBadContactCreation() {
 
     app.goTo().HomePage();
@@ -91,8 +86,8 @@ public class ContactCreationTests extends TestBase {
     Contacts before = app.contact().all();
 
     ContactData contact = new ContactData()
-            .withFirstName("Error'").withMiddleName("Error").withLastName("Error").withCompany("Error")
-            .withHome("84832121212").withEmail("Error").withGroup("test1");
+            .withFirstName(properties.getProperty("web.BadFirstName"))
+            .withGroup(properties.getProperty("web.Group"));
 
     app.contact().create(contact, true);
     app.goTo().HomePage();

@@ -6,11 +6,24 @@ import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.Contacts;
 import ru.stqa.ptf.addressbook.model.GroupData;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.testng.Assert.assertEquals;
 
 public class ContactModificationTests extends TestBase {
+
+  private final Properties properties;
+
+  public ContactModificationTests() throws IOException {
+    properties = new Properties();
+    String target = System.getProperty("target", "local");
+    properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
+  }
 
   @BeforeMethod
   public void ensurePreconditions() {
@@ -18,15 +31,24 @@ public class ContactModificationTests extends TestBase {
     app.goTo().GroupPage();
 
     if (app.group().all().size() == 0 || !app.group().GroupExists().equals("test1")) {
-      app.group().create(new GroupData().withName("test1").withHeader("test2").withFooter("test3"));
+      app.group().create(new GroupData()
+              .withName(properties.getProperty("web.FirstGroupName"))
+              .withHeader(properties.getProperty("web.GroupHeadere"))
+              .withFooter(properties.getProperty("web.GroupFooter")));
     }
 
     app.goTo().HomePage();
 
     if (app.contact().all().size() == 0) {
       app.contact().create(new ContactData()
-              .withFirstName("Eva").withMiddleName("Victorovna").withLastName("Orlova").withCompany("OOO Test")
-              .withHome("84832121212").withEmail("e.orlova@bk.ru").withGroup("test1"), true);
+              .withFirstName(properties.getProperty("web.FirstName"))
+              .withMiddleName(properties.getProperty("web.MiddleName"))
+              .withLastName(properties.getProperty("web.LastName"))
+              .withCompany(properties.getProperty("web.Company"))
+              .withAddress(properties.getProperty("web.Address"))
+              .withHome(properties.getProperty("web.HomePhone"))
+              .withEmail(properties.getProperty("web.Email"))
+              .withGroup(properties.getProperty("web.Group")), true);
     }
   }
 
@@ -39,8 +61,12 @@ public class ContactModificationTests extends TestBase {
     ContactData modifiedContact = before.iterator().next();
 
     ContactData contact = new ContactData()
-            .withId(modifiedContact.getId()).withFirstName("Eva_3").withMiddleName("Victorovna_3").withLastName("Orlova_3")
-            .withCompany("OOO Test_3").withHome("84832121212").withEmail("e.orlova_3@bk.ru").withGroup(null);
+            .withId(modifiedContact.getId())
+            .withFirstName(properties.getProperty("web.NewFirstName"))
+            .withMiddleName(properties.getProperty("web.NewMiddleName"))
+            .withLastName(properties.getProperty("web.NewLastName"))
+            .withEmail(properties.getProperty("web.NewEmail"))
+            .withGroup(null);
 
     app.contact().modify(contact);
 

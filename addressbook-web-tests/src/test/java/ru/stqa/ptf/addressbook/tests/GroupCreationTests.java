@@ -2,7 +2,6 @@ package ru.stqa.ptf.addressbook.tests;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.thoughtworks.xstream.XStream;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.GroupData;
@@ -11,6 +10,7 @@ import ru.stqa.ptf.addressbook.model.Groups;
 import java.io.*;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -18,22 +18,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class GroupCreationTests extends TestBase {
 
+  private final Properties properties;
 
-  @DataProvider
-  public Iterator<Object[]> validGroupsFromXml() throws IOException {
-    try (BufferedReader reader = new BufferedReader(new FileReader(new File("src/test/resources/groups.xml")))) {
-      String xml = "";
-      String line = reader.readLine();
-      while (line != null) {
-        xml += line;
-        line = reader.readLine();
-      }
-      XStream xstream = new XStream();
-      xstream.processAnnotations(GroupData.class);
-      List<GroupData> groups = (List<GroupData>) xstream.fromXML(xml);
-      return groups.stream().map((g) -> new Object[]{g}).collect(Collectors.toList()).iterator();
-    }
+  public GroupCreationTests() throws IOException {
+    properties = new Properties();
+    String target = System.getProperty("target", "local");
+    properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
   }
+
 
   @DataProvider
   public Iterator<Object[]> validGroupsFromJson() throws IOException {
@@ -68,14 +60,14 @@ public class GroupCreationTests extends TestBase {
             before.withAdded(group.withId(after.stream().mapToInt((g) -> g.getId()).max().getAsInt()))));
   }
 
-  @Test(enabled = false)
+  @Test
   public void testBadGroupCreation() {
 
     app.goTo().GroupPage();
 
     Groups before = app.group().all();
 
-    GroupData group = new GroupData().withName("test1'");
+    GroupData group = new GroupData().withName(properties.getProperty("web.BadGroupName"));
     assertThat(app.group().count(), equalTo(before.size()));
 
     app.group().create(group);

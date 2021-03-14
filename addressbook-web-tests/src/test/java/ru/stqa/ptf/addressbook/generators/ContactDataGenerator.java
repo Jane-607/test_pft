@@ -8,13 +8,10 @@ import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
 import ru.stqa.ptf.addressbook.model.ContactData;
 
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class ContactDataGenerator {
 
@@ -26,6 +23,14 @@ public class ContactDataGenerator {
 
   @Parameter(names = "-d", description = "Data format")
   public String format;
+
+  private final Properties properties;
+
+  public ContactDataGenerator() throws IOException {
+    properties = new Properties();
+    String target = System.getProperty("target", "local");
+    properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
+  }
 
   public static void main(String[] args) throws IOException {
     ContactDataGenerator generator = new ContactDataGenerator();
@@ -78,17 +83,27 @@ public class ContactDataGenerator {
     }
   }
 
-
   private List<ContactData> generateContacts(int count) {
+
+    int a = 0;
+    int b = 100000000;
+    int random_number = a + (int) (Math.random() * b);
 
     List<ContactData> contacts = new ArrayList<ContactData>();
     for (int i = 0; i < count; i++) {
       contacts.add(new ContactData()
-              .withFirstName(String.format("Olga %s", i)).withMiddleName(String.format("Ivanovna %s", i))
-              .withLastName(String.format("Petrova %s", i)).withCompany(String.format("OOO Armada %s", i)).withAddress(String.format("Bryansk, Lenina, %s", i))
-              .withHome(String.format("8 4832 00 00 00", i)).withMobile(String.format("8 800 200 70 09", i)).withWork(String.format("22-22-22", i))
-              .withEmail(String.format("olga_%s@bk.ru", i)).withEmail2(String.format("rabota_%s@ya.ru", i)).withEmail3(String.format("home_%s@gmail.com", i))
-              .withGroup(String.format("test1", i)));
+              .withFirstName(String.format(properties.getProperty("web.FirstName") + " %s", i))
+              .withMiddleName(String.format(properties.getProperty("web.MiddleName") + " %s", i))
+              .withLastName(String.format(properties.getProperty("web.LastName") + " %s", i))
+              .withCompany(String.format(properties.getProperty("web.Company") + "%s", i))
+              .withAddress(String.format(properties.getProperty("web.Address") + "%s", i))
+              .withHome(properties.getProperty("web.HomePhone") + random_number)
+              .withMobile(properties.getProperty("web.MobilePhone") + random_number)
+              .withWork(properties.getProperty("web.WorkPhone") + random_number)
+              .withEmail(String.format(properties.getProperty("web.Email") + "%s@bk.ru", i))
+              .withEmail2(String.format(properties.getProperty("web.Email2") + "%s@ya.ru", i))
+              .withEmail3(String.format(properties.getProperty("web.Email3") + "%s@gmail.com", i))
+              .withGroup(properties.getProperty("web.Group")));
     }
     return contacts;
   }
