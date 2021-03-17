@@ -31,9 +31,9 @@ public class GroupModificationTests extends TestBase {
     if (app.db().groups().size() == 0) {
       app.goTo().GroupPage();
       app.group().create(new GroupData()
-              .withName(properties.getProperty("web.GroupName"))
-              .withHeader(properties.getProperty("web.GroupHeadere"))
-              .withFooter(properties.getProperty("web.GroupFooter")));
+              .withName(properties.getProperty("web.BeforeGroupName"))
+              .withHeader(properties.getProperty("web.BeforeGroupHeadere"))
+              .withFooter(properties.getProperty("web.BeforeGroupFooter")));
       app.goTo().GroupPage();
     }
   }

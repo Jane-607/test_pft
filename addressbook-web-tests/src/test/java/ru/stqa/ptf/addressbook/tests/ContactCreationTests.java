@@ -54,7 +54,7 @@ public class ContactCreationTests extends TestBase {
 
     if (!app.group().isThereAGroup() || !app.group().GroupExists().equals("test1")) {
       app.group().create(new GroupData()
-              .withName(properties.getProperty("web.FirstGroupName"))
+              .withName(properties.getProperty("web.BeforeGroupName"))
               .withHeader(properties.getProperty("web.GroupHeadere"))
               .withFooter(properties.getProperty("web.GroupFooter")));
     }
@@ -66,15 +66,12 @@ public class ContactCreationTests extends TestBase {
 
     app.goTo().HomePage();
 
-    Contacts before = app.contact().all();
-
-    //File photo = new File("src/test/resources/file.png");
-
+    Contacts before = app.db().contacts();
     app.contact().create(contact, true);
     app.goTo().HomePage();
     assertThat(app.contact().count(), equalTo(before.size() + 1));
 
-    Contacts after = app.contact().all();
+    Contacts after = app.db().contacts();
     assertThat(after, equalTo(
             before.withAdded(contact.withId(after.stream().mapToInt((g) -> g.getId()).max().getAsInt()))));
   }
@@ -85,7 +82,7 @@ public class ContactCreationTests extends TestBase {
 
     app.goTo().HomePage();
 
-    Contacts before = app.contact().all();
+    Contacts before = app.db().contacts();
 
     ContactData contact = new ContactData()
             .withFirstName(properties.getProperty("web.BadFirstName"))
@@ -95,7 +92,7 @@ public class ContactCreationTests extends TestBase {
     app.goTo().HomePage();
     assertThat(app.contact().count(), equalTo(before.size()));
 
-    Contacts after = app.contact().all();
+    Contacts after = app.db().contacts();
     assertThat(after, equalTo(before));
   }
 }

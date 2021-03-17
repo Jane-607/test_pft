@@ -29,24 +29,28 @@ public class ContactDeletionTests extends TestBase {
 
     app.goTo().GroupPage();
 
-    if (app.group().all().size() == 0 || !app.group().GroupExists().equals("test1")) {
+    if (app.db().groups().size() == 0 || !app.group().GroupExists().equals("test1")) {
       app.group().create(new GroupData()
-              .withName(properties.getProperty("web.FirstGroupName"))
+              .withName(properties.getProperty("web.BeforeGroupName"))
               .withHeader(properties.getProperty("web.GroupHeadere"))
               .withFooter(properties.getProperty("web.GroupFooter")));
     }
 
     app.goTo().HomePage();
 
-    if (app.contact().all().size() == 0) {
+    if (app.db().contacts().size() == 0) {
       app.contact().create(new ContactData()
               .withFirstName(properties.getProperty("web.FirstName"))
               .withMiddleName(properties.getProperty("web.MiddleName"))
               .withLastName(properties.getProperty("web.LastName"))
               .withCompany(properties.getProperty("web.Company"))
               .withAddress(properties.getProperty("web.Address"))
-              .withHome(properties.getProperty("web.HomePhone"))
-              .withEmail(properties.getProperty("web.Email"))
+              .withHome(properties.getProperty("web.BeforeHomePhone"))
+              .withMobile(properties.getProperty("web.BeforeMobilePhone"))
+              .withWork(properties.getProperty("web.BeforeWorkPhone"))
+              .withEmail(properties.getProperty("web.BeforeEmail"))
+              .withEmail2(properties.getProperty("web.BeforeEmail2"))
+              .withEmail3(properties.getProperty("web.BeforeEmail3"))
               .withGroup(properties.getProperty("web.Group")), true);
     }
   }
@@ -56,14 +60,14 @@ public class ContactDeletionTests extends TestBase {
 
     app.goTo().HomePage();
 
-    Contacts before = app.contact().all();
+    Contacts before = app.db().contacts();
     ContactData deletedContact = before.iterator().next();
 
     app.contact().delete(deletedContact);
     app.goTo().HomePage();
     assertThat(app.contact().count(), equalTo(before.size() - 1));
 
-    Contacts after = app.contact().all();
+    Contacts after = app.db().contacts();
     assertThat(after, equalTo(before.without(deletedContact)));
   }
 

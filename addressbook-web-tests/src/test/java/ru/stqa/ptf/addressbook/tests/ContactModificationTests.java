@@ -32,7 +32,7 @@ public class ContactModificationTests extends TestBase {
 
     if (app.db().groups().size() == 0 || !app.group().GroupExists().equals("test1")) {
       app.group().create(new GroupData()
-              .withName(properties.getProperty("web.FirstGroupName"))
+              .withName(properties.getProperty("web.BeforeGroupName"))
               .withHeader(properties.getProperty("web.GroupHeadere"))
               .withFooter(properties.getProperty("web.GroupFooter")));
     }
@@ -46,12 +46,12 @@ public class ContactModificationTests extends TestBase {
               .withLastName(properties.getProperty("web.LastName"))
               .withCompany(properties.getProperty("web.Company"))
               .withAddress(properties.getProperty("web.Address"))
-              .withHome(properties.getProperty("web.HomePhone"))
-              .withMobile(properties.getProperty("web.MobilePhone"))
-              .withWork(properties.getProperty("web.WorkPhone"))
-              .withEmail(properties.getProperty("web.Email"))
-              .withEmail2(properties.getProperty("web.Email2"))
-              .withEmail3(properties.getProperty("web.Email3"))
+              .withHome(properties.getProperty("web.BeforeHomePhone"))
+              .withMobile(properties.getProperty("web.BeforeMobilePhone"))
+              .withWork(properties.getProperty("web.BeforeWorkPhone"))
+              .withEmail(properties.getProperty("web.BeforeEmail"))
+              .withEmail2(properties.getProperty("web.BeforeEmail2"))
+              .withEmail3(properties.getProperty("web.BeforeEmail3"))
               .withGroup(properties.getProperty("web.Group")), true);
     }
   }
