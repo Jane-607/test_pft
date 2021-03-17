@@ -23,6 +23,7 @@ public class ApplicationManager {
   private String browser;
 
   private final Properties properties;
+  private DbHelper dbHelper;
 
   public ApplicationManager(String browser) {
     this.browser = browser;
@@ -33,6 +34,8 @@ public class ApplicationManager {
   public void init() throws IOException {
     String target = System.getProperty("target","local");
     properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
+
+    dbHelper = new DbHelper();
 
     if (browser.equals(BrowserType.CHROME)) { wd = new ChromeDriver();}
     else if (browser.equals(BrowserType.FIREFOX)) { wd = new FirefoxDriver();}
@@ -50,23 +53,18 @@ public class ApplicationManager {
   public void stop() {
     wd.quit();
   }
-
   public void logout() {
     sessionHelper.logout();
   }
 
-  public GroupHelper group() {
-    return groupHelper;
-  }
-
+  public GroupHelper group() { return groupHelper; }
   public ContactHelper contact() { return contactHelper; }
-
   public NavigationHelper goTo() {
     return navigationHelper;
   }
-
   public SessionHelper getSessionHelper() {
     return sessionHelper;
   }
+  public DbHelper db() {return dbHelper; }
 
 }

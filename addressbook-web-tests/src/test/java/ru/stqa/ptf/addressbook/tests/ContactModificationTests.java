@@ -30,7 +30,7 @@ public class ContactModificationTests extends TestBase {
 
     app.goTo().GroupPage();
 
-    if (app.group().all().size() == 0 || !app.group().GroupExists().equals("test1")) {
+    if (app.db().groups().size() == 0 || !app.group().GroupExists().equals("test1")) {
       app.group().create(new GroupData()
               .withName(properties.getProperty("web.FirstGroupName"))
               .withHeader(properties.getProperty("web.GroupHeadere"))
@@ -39,7 +39,7 @@ public class ContactModificationTests extends TestBase {
 
     app.goTo().HomePage();
 
-    if (app.contact().all().size() == 0) {
+    if (app.db().contacts().size() == 0) {
       app.contact().create(new ContactData()
               .withFirstName(properties.getProperty("web.FirstName"))
               .withMiddleName(properties.getProperty("web.MiddleName"))
@@ -47,7 +47,11 @@ public class ContactModificationTests extends TestBase {
               .withCompany(properties.getProperty("web.Company"))
               .withAddress(properties.getProperty("web.Address"))
               .withHome(properties.getProperty("web.HomePhone"))
+              .withMobile(properties.getProperty("web.MobilePhone"))
+              .withWork(properties.getProperty("web.WorkPhone"))
               .withEmail(properties.getProperty("web.Email"))
+              .withEmail2(properties.getProperty("web.Email2"))
+              .withEmail3(properties.getProperty("web.Email3"))
               .withGroup(properties.getProperty("web.Group")), true);
     }
   }
@@ -57,7 +61,7 @@ public class ContactModificationTests extends TestBase {
 
     app.goTo().HomePage();
 
-    Contacts before = app.contact().all();
+    Contacts before = app.db().contacts();
     ContactData modifiedContact = before.iterator().next();
 
     ContactData contact = new ContactData()
@@ -65,7 +69,14 @@ public class ContactModificationTests extends TestBase {
             .withFirstName(properties.getProperty("web.NewFirstName"))
             .withMiddleName(properties.getProperty("web.NewMiddleName"))
             .withLastName(properties.getProperty("web.NewLastName"))
+            .withCompany(properties.getProperty("web.NewCompany"))
+            .withAddress(properties.getProperty("web.NewAddress"))
+            .withHome(properties.getProperty("web.NewHomePhone"))
+            .withMobile(properties.getProperty("web.NewMobilePhone"))
+            .withWork(properties.getProperty("web.NewWorkPhone"))
             .withEmail(properties.getProperty("web.NewEmail"))
+            .withEmail2(properties.getProperty("web.NewEmail2"))
+            .withEmail3(properties.getProperty("web.NewEmail3"))
             .withGroup(null);
 
     app.contact().modify(contact);
@@ -73,7 +84,7 @@ public class ContactModificationTests extends TestBase {
     app.goTo().HomePage();
     assertThat(app.contact().count(), equalTo(before.size()));
 
-    Contacts after = app.contact().all();
+    Contacts after = app.db().contacts();
     assertThat(after, equalTo(before.without(modifiedContact).withAdded(contact)));
   }
 }
