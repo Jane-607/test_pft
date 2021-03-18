@@ -51,8 +51,8 @@ public class ContactModificationTests extends TestBase {
               .withWork(properties.getProperty("web.BeforeWorkPhone"))
               .withEmail(properties.getProperty("web.BeforeEmail"))
               .withEmail2(properties.getProperty("web.BeforeEmail2"))
-              .withEmail3(properties.getProperty("web.BeforeEmail3"))
-              .withGroup(properties.getProperty("web.Group")), true);
+              .withEmail3(properties.getProperty("web.BeforeEmail3")), true);
+              //.withGroup(properties.getProperty("web.Group"));
     }
   }
 
@@ -76,8 +76,8 @@ public class ContactModificationTests extends TestBase {
             .withWork(properties.getProperty("web.NewWorkPhone"))
             .withEmail(properties.getProperty("web.NewEmail"))
             .withEmail2(properties.getProperty("web.NewEmail2"))
-            .withEmail3(properties.getProperty("web.NewEmail3"))
-            .withGroup(null);
+            .withEmail3(properties.getProperty("web.NewEmail3"));
+            //.withGroup(null);
 
     app.contact().modify(contact);
 
@@ -86,5 +86,6 @@ public class ContactModificationTests extends TestBase {
 
     Contacts after = app.db().contacts();
     assertThat(after, equalTo(before.without(modifiedContact).withAdded(contact)));
+    verifyContactListInUI ();
   }
 }

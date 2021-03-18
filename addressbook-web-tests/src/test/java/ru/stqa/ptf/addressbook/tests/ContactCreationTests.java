@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.Contacts;
 import ru.stqa.ptf.addressbook.model.GroupData;
+import ru.stqa.ptf.addressbook.model.Groups;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,21 +32,6 @@ public class ContactCreationTests extends TestBase {
     properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
   }
 
-  @DataProvider
-  public Iterator<Object[]> validContactsFromJson() throws IOException {
-    try (BufferedReader reader = new BufferedReader(new FileReader(new File("src/test/resources/contacts.json")))) {
-      String json = "";
-      String line = reader.readLine();
-      while (line != null) {
-        json += line;
-        line = reader.readLine();
-      }
-      Gson gson = new Gson();
-      List<ContactData> contacts = gson.fromJson(json, new TypeToken<List<ContactData>>() {
-      }.getType());
-      return contacts.stream().map((g) -> new Object[]{g}).collect(Collectors.toList()).iterator();
-    }
-  }
 
   @BeforeMethod
   public void ensurePreconditions() {
@@ -74,25 +60,26 @@ public class ContactCreationTests extends TestBase {
     Contacts after = app.db().contacts();
     assertThat(after, equalTo(
             before.withAdded(contact.withId(after.stream().mapToInt((g) -> g.getId()).max().getAsInt()))));
+
+    verifyContactListInUI ();
   }
 
 
   @Test
   public void testBadContactCreation() {
 
-    app.goTo().HomePage();
-
-    Contacts before = app.db().contacts();
-
-    ContactData contact = new ContactData()
+    Groups groups = app.db().groups();
+    ContactData newContact = new ContactData()
             .withFirstName(properties.getProperty("web.BadFirstName"))
-            .withGroup(properties.getProperty("web.Group"));
-
-    app.contact().create(contact, true);
+            .inGroup(groups.iterator().next());
+    app.goTo().HomePage();
+    Contacts before = app.db().contacts();
+    app.contact().create(newContact, true);
     app.goTo().HomePage();
     assertThat(app.contact().count(), equalTo(before.size()));
 
     Contacts after = app.db().contacts();
     assertThat(after, equalTo(before));
+    verifyContactListInUI ();
   }
 }
