@@ -109,6 +109,9 @@ public class ContactData {
   private File photo;
 
   @Transient
+  private String group;
+
+  @Transient
   private String allPhones;
 
   @Transient
@@ -182,6 +185,11 @@ public class ContactData {
 
   public ContactData withEmail3(String email3) {
     this.email3 = email3;
+    return this;
+  }
+
+  public ContactData withGroup(String group) {
+    this.group = group;
     return this;
   }
 
@@ -263,5 +271,6 @@ public class ContactData {
     groups.add(group);
     return this;
   }
+
 }
 

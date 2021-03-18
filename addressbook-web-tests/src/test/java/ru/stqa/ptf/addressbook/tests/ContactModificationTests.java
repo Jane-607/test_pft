@@ -51,8 +51,8 @@ public class ContactModificationTests extends TestBase {
               .withWork(properties.getProperty("web.BeforeWorkPhone"))
               .withEmail(properties.getProperty("web.BeforeEmail"))
               .withEmail2(properties.getProperty("web.BeforeEmail2"))
-              .withEmail3(properties.getProperty("web.BeforeEmail3")), true);
-              //.withGroup(properties.getProperty("web.Group"));
+              .withEmail3(properties.getProperty("web.BeforeEmail3"))
+              .withGroup(properties.getProperty("web.Group")), true);
     }
   }
 
