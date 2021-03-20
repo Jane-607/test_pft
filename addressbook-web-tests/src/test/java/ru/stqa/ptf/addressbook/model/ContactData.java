@@ -255,9 +255,9 @@ public class ContactData {
     return work;
   }
 
-  public Groups getGroups() {
-    return new Groups(groups);
-  }
+  public String getGroup() { return group; }
+
+  public Groups getGroups() { return new Groups(groups); }
 
   public String getAllPhones() {
     return allPhones;

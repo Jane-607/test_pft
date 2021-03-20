@@ -65,7 +65,7 @@ public class ContactCreationTests extends TestBase {
   }
 
 
-  @Test
+  @Test(enabled = false)
   public void testBadContactCreation() {
 
     Groups groups = app.db().groups();

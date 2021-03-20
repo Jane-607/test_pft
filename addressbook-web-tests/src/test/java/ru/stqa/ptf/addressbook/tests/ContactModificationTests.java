@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.Contacts;
 import ru.stqa.ptf.addressbook.model.GroupData;
+import ru.stqa.ptf.addressbook.model.Groups;
 
 import java.io.File;
 import java.io.FileReader;
@@ -40,6 +41,7 @@ public class ContactModificationTests extends TestBase {
     app.goTo().HomePage();
 
     if (app.db().contacts().size() == 0) {
+      Groups groups = app.db().groups();
       app.contact().create(new ContactData()
               .withFirstName(properties.getProperty("web.FirstName"))
               .withMiddleName(properties.getProperty("web.MiddleName"))
@@ -52,7 +54,7 @@ public class ContactModificationTests extends TestBase {
               .withEmail(properties.getProperty("web.BeforeEmail"))
               .withEmail2(properties.getProperty("web.BeforeEmail2"))
               .withEmail3(properties.getProperty("web.BeforeEmail3"))
-              .withGroup(properties.getProperty("web.Group")), true);
+              .inGroup(groups.iterator().next()),true);
     }
   }
 
@@ -63,7 +65,7 @@ public class ContactModificationTests extends TestBase {
 
     Contacts before = app.db().contacts();
     ContactData modifiedContact = before.iterator().next();
-
+    Groups groups = app.db().groups();
     ContactData contact = new ContactData()
             .withId(modifiedContact.getId())
             .withFirstName(properties.getProperty("web.NewFirstName"))
@@ -77,10 +79,8 @@ public class ContactModificationTests extends TestBase {
             .withEmail(properties.getProperty("web.NewEmail"))
             .withEmail2(properties.getProperty("web.NewEmail2"))
             .withEmail3(properties.getProperty("web.NewEmail3"));
-            //.withGroup(null);
 
     app.contact().modify(contact);
-
     app.goTo().HomePage();
     assertThat(app.contact().count(), equalTo(before.size()));
 
