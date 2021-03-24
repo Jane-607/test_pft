@@ -1,6 +1,5 @@
 package ru.stqa.ptf.addressbook.tests;
 
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.GroupData;
@@ -10,7 +9,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,7 +26,7 @@ public class GroupDeletionTests extends TestBase {
   @BeforeMethod
   public void ensurePreconditions() {
 
-    app.goTo().GroupPage();
+    app.goTo().GroupsPage();
 
     if (app.db().groups().size() == 0) {
       app.group().create(new GroupData()
@@ -36,7 +34,7 @@ public class GroupDeletionTests extends TestBase {
               .withHeader(properties.getProperty("web.GroupHeadere"))
               .withFooter(properties.getProperty("web.GroupFooter")));
     }
-    app.goTo().GroupPage();
+    app.goTo().GroupsPage();
   }
 
   @Test

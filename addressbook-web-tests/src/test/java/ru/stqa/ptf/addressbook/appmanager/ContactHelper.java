@@ -8,10 +8,12 @@ import org.testng.Assert;
 import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.Contacts;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.assertFalse;
+import static ru.stqa.ptf.addressbook.tests.TestBase.app;
+
 
 public class ContactHelper extends HelperBase {
 
@@ -26,9 +28,55 @@ public class ContactHelper extends HelperBase {
     contactCache = null;
   }
 
-  public void initContactCreation() { click(By.linkText("add new")); }
-  public void submitContactCreation() { click(By.name("submit")); }
+  public void initContactCreation() {
+    click(By.linkText("add new"));
+  }
 
+  public void submitContactCreation() {
+    click(By.name("submit"));
+  }
+
+  public void selectContactById(int id) {
+    wd.findElement(By.cssSelector("input[value='" + id + "']")).click();
+  }
+
+  public void selectAddTo() {
+    click(By.cssSelector("input[value='Add to']"));
+  }
+
+  public void selectToGroup() {
+    String groupName = app.db().contacts().iterator().next().getGroups().iterator().next().getName();
+    if (groupName.equals("test1")) {
+      new Select(wd.findElement(By.name("to_group"))).selectByVisibleText("test2");
+    } else {
+      new Select(wd.findElement(By.name("to_group"))).selectByVisibleText("test1");
+    }
+  }
+  public void selectGroup() {
+
+    Contacts allContacts = app.db().contacts();
+    List<String> contacts = new ArrayList<>();
+    for (ContactData contact : allContacts) {
+      contacts.add(contact.getGroup());
+    }
+
+
+    ContactData groupName = app.db().contacts().iterator().next();
+    String test = groupName.getGroup();
+    new Select(wd.findElement(By.name("to_group"))).selectByVisibleText(test);
+  }
+
+  public void deleteSelectedContacts() {
+    click(By.xpath("//input[@value='Delete']"));
+  }
+
+  public void submitContacModification() {
+    click(By.name("update"));
+  }
+
+  public int count() {
+    return wd.findElements(By.name("selected[]")).size();
+  }
 
   public void delete(ContactData contact) {
     selectContactById(contact.getId());
@@ -38,11 +86,11 @@ public class ContactHelper extends HelperBase {
     contactCache = null;
   }
 
-  public void selectContactById(int id) { wd.findElement(By.cssSelector("input[value='" + id + "']")).click(); }
-  public void deleteSelectedContacts() {
-    click(By.xpath("//input[@value='Delete']"));
+  public void addToGroup(ContactData contact) {
+    selectContactById(contact.getId());
+    selectToGroup();
+    selectAddTo();
   }
-
 
   public void modify(ContactData contact) {
     initContactModificationById(contact.getId());
@@ -51,20 +99,13 @@ public class ContactHelper extends HelperBase {
     contactCache = null;
   }
 
-  //public void initContactModification() { click(By.xpath("//img[@alt='Edit']")); }
   private void initContactModificationById(int id) {
     WebElement checkbox = wd.findElement(By.cssSelector(String.format(("input[value='%s']"), id)));
     System.out.println(id);
     WebElement element = checkbox.findElement(By.xpath("./../.."));
     List<WebElement> cells = element.findElements((By.tagName("td")));
     cells.get(7).findElement(By.tagName("a")).click();
-
-    // wd.findElement(By.xpath(String.format("input[value='%s']/../../td[8]/a",id))).click();
-    // wd.findElement(By.xpath(String.format("//tr[.//input[value='%s']]td[8]/a",id))).click();
-    // wd.findElement(By.cssSelector(String.format("a[href='edit.php?id=%s]'",id))).click();
-    }
-
-  public void submitContacModification() { click(By.name("update")); }
+  }
 
   public void fillContactForm(ContactData contactData, boolean creation) {
     type(By.name("firstname"), contactData.getFirstName());
@@ -82,12 +123,12 @@ public class ContactHelper extends HelperBase {
 
 
     if (creation) {
-      if (contactData.getGroups().size() ==0) {
-      new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroup());
-      }
-      else if (contactData.getGroups().size() >0) {
+      if (contactData.getGroups().size() == 0) {
+        new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroup());
+      } else if (contactData.getGroups().size() > 0) {
         Assert.assertTrue(contactData.getGroups().size() == 1);
-        new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroups().iterator().next().getName());}
+        new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroups().iterator().next().getName());
+      }
     } else assertFalse(isElementPresent(By.name("new_group")));
   }
 
@@ -109,12 +150,12 @@ public class ContactHelper extends HelperBase {
             .withEmail(email).withEmail2(email2).withEmail3(email3);
   }
 
-
-  public int count() { return wd.findElements(By.name("selected[]")).size(); }
-
   private Contacts contactCache = null;
 
-  public Contacts all() { if (contactCache != null) { return new Contacts(contactCache); }
+  public Contacts all() {
+    if (contactCache != null) {
+      return new Contacts(contactCache);
+    }
     contactCache = new Contacts();
     List<WebElement> elements = wd.findElements(By.cssSelector("tr[name='entry']"));
     for (WebElement element : elements) {
@@ -131,4 +172,3 @@ public class ContactHelper extends HelperBase {
     return new Contacts(contactCache);
   }
 }
-

@@ -2,7 +2,6 @@ package ru.stqa.ptf.addressbook.tests;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.hamcrest.CoreMatchers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.slf4j.Logger;
@@ -31,7 +30,7 @@ public class TestBase {
 
   Logger logger = LoggerFactory.getLogger(TestBase.class);
 
-  protected static final ApplicationManager app
+  public static final ApplicationManager app
           = new ApplicationManager(System.getProperty("browser", BrowserType.CHROME));
   WebDriver wd;
 

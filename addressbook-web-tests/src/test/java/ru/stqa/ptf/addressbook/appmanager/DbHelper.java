@@ -30,6 +30,7 @@ public class DbHelper {
     List<GroupData> result = session.createQuery("from GroupData").list();
     for (GroupData group : result) {
       System.out.println(group);
+      System.out.println(group.getName());
     }
     session.getTransaction().commit();
     session.close();

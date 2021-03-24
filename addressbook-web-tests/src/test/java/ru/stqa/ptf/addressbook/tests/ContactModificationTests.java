@@ -29,11 +29,11 @@ public class ContactModificationTests extends TestBase {
   @BeforeMethod
   public void ensurePreconditions() {
 
-    app.goTo().GroupPage();
+    app.goTo().GroupsPage();
 
     if (app.db().groups().size() == 0 || !app.group().GroupExists().equals("test1")) {
       app.group().create(new GroupData()
-              .withName(properties.getProperty("web.BeforeGroupName"))
+              .withName(properties.getProperty("web.BeforeGroupName1"))
               .withHeader(properties.getProperty("web.GroupHeadere"))
               .withFooter(properties.getProperty("web.GroupFooter")));
     }

@@ -23,10 +23,10 @@ public class GroupCreationTests extends TestBase {
 
   @Test(dataProvider = "validGroupsFromJson")
   public void testGroupCreation(GroupData group) {
-    app.goTo().GroupPage();
+    app.goTo().GroupsPage();
     Groups before = app.db().groups();
     app.group().create(group);
-    app.goTo().GroupPage();
+    app.goTo().GroupsPage();
     assertThat(app.group().count(), equalTo(before.size() + 1));
     Groups after = app.db().groups();
     assertThat(after, equalTo(
@@ -36,12 +36,12 @@ public class GroupCreationTests extends TestBase {
 
   @Test(enabled = false)
   public void testBadGroupCreation() {
-    app.goTo().GroupPage();
+    app.goTo().GroupsPage();
     Groups before = app.db().groups();
     GroupData group = new GroupData().withName(properties.getProperty("web.BadGroupName"));
     assertThat(app.group().count(), equalTo(before.size()));
     app.group().create(group);
-    app.goTo().GroupPage();
+    app.goTo().GroupsPage();
     Groups after = app.db().groups();
     assertThat(after, equalTo(before));
     verifyGroupListInUI ();

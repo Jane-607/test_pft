@@ -203,9 +203,7 @@ public class ContactData {
     return this;
   }
 
-  public int getId() {
-    return id;
-  }
+  public int getId() { return id; }
 
   public String getFirstName() {
     return firstName;
@@ -259,18 +257,13 @@ public class ContactData {
 
   public Groups getGroups() { return new Groups(groups); }
 
-  public String getAllPhones() {
-    return allPhones;
-  }
+  public String getAllPhones() { return allPhones; }
 
   public String getAllEmails() {
     return allEmails;
   }
 
-  public ContactData inGroup(GroupData group) {
-    groups.add(group);
-    return this;
-  }
+  public ContactData inGroup(GroupData group) { groups.add(group); return this; }
 
 }
 

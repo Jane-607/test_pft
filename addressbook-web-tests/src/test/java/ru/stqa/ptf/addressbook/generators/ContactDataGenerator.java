@@ -102,8 +102,8 @@ public class ContactDataGenerator {
               .withWork(properties.getProperty("web.WorkPhone") + random_number)
               .withEmail(String.format(properties.getProperty("web.Email") + "%s@bk.ru", i))
               .withEmail2(String.format(properties.getProperty("web.Email2") + "%s@ya.ru", i))
-              .withEmail3(String.format(properties.getProperty("web.Email3") + "%s@gmail.com", i)));
-             // .withGroup(properties.getProperty("web.Group")));
+              .withEmail3(String.format(properties.getProperty("web.Email3") + "%s@gmail.com", i))
+              .withGroup(properties.getProperty("web.Group")));
     }
     return contacts;
   }

@@ -29,12 +29,12 @@ public class GroupModificationTests extends TestBase {
   public void ensurePreconditionsBase(){
 
     if (app.db().groups().size() == 0) {
-      app.goTo().GroupPage();
+      app.goTo().GroupsPage();
       app.group().create(new GroupData()
               .withName(properties.getProperty("web.BeforeGroupName"))
               .withHeader(properties.getProperty("web.BeforeGroupHeadere"))
               .withFooter(properties.getProperty("web.BeforeGroupFooter")));
-      app.goTo().GroupPage();
+      app.goTo().GroupsPage();
     }
   }
 
@@ -50,7 +50,7 @@ public class GroupModificationTests extends TestBase {
             .withName(properties.getProperty("web.NewGroupName"))
             .withHeader(properties.getProperty("web.NewGroupHeadere"))
             .withFooter(properties.getProperty("web.NewGroupFooter"));
-    app.goTo().GroupPage();
+    app.goTo().GroupsPage();
     app.group().modify(group);
     assertThat(app.group().count(), equalTo(before.size()));
 
