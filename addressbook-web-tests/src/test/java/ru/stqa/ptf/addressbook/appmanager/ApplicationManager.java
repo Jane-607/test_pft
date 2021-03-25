@@ -59,12 +59,8 @@ public class ApplicationManager {
 
   public GroupHelper group() { return groupHelper; }
   public ContactHelper contact() { return contactHelper; }
-  public NavigationHelper goTo() {
-    return navigationHelper;
-  }
-  public SessionHelper getSessionHelper() {
-    return sessionHelper;
-  }
+  public NavigationHelper goTo() { return navigationHelper; }
+  public SessionHelper getSessionHelper() { return sessionHelper; }
   public DbHelper db() {return dbHelper; }
 
 }

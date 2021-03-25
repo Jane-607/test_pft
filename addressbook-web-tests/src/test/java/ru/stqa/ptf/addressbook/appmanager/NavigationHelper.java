@@ -18,16 +18,16 @@ public class NavigationHelper extends HelperBase {
     click(By.linkText("groups"));
   }
 
+  public void GroupPage() {
+    if (isElementPresent(By.partialLinkText("group page"))) {
+      click(By.partialLinkText("group page"));
+    }
+  }
+
   public void HomePage() {
     if (isElementPresent(By.id("maintable"))) {
       return;
     }
     click(By.linkText("home"));
-  }
-
-  public void GroupPage() {
-    if (isElementPresent(By.partialLinkText("group page"))) {
-      click(By.partialLinkText("group page"));
-    }
   }
 }
