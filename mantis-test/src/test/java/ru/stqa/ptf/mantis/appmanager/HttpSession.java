@@ -25,18 +25,26 @@ public class HttpSession {
     httpclient = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()).build();
   }
 
-  public boolean login(String username) throws IOException {
-    HttpPost post = new HttpPost(app.getProperty("web.baseUrl") + "/login_password_page.php");
+  public boolean login(String username, String password) throws IOException {
+    HttpPost post = new HttpPost(app.getProperty("web.baseUrl") + "/login.php");
     List<NameValuePair> params =  new ArrayList<NameValuePair>();
     params.add(new BasicNameValuePair("username", username));
+    params.add(new BasicNameValuePair("password", password));
     params.add(new BasicNameValuePair("secure session", "on"));
     params.add(new BasicNameValuePair("return", "index.php"));
     post.setEntity(new UrlEncodedFormEntity(params));
     CloseableHttpResponse response = httpclient.execute(post);
     String body = getTextFrom(response);
-    return body.contains(String.format("<a class=\"pull-right\" href=\"lost_pwd_page.php?username=%s\">Lost your password?</a>", username));
+    return body.contains(String.format("<span class=\"user-info\">%s</span>", username));
   }
 
+
+  public  boolean isLoggedInAs(String username) throws IOException {
+    HttpGet get = new HttpGet(app.getProperty("web.baseUrl") + "/account_page.php");
+    CloseableHttpResponse response = httpclient.execute(get);
+    String body = getTextFrom(response);
+    return body.contains(String.format("<span class=\"user-info\">%s</span>", username));
+  }
 
   private String getTextFrom(CloseableHttpResponse response) throws IOException {
     try {
@@ -45,12 +53,5 @@ public class HttpSession {
     finally {
       response.close();
     }
-  }
-
-  public  boolean isLoggedInAs(String username) throws IOException {
-    HttpGet get = new HttpGet(app.getProperty("web.baseUrl") + "/account_page.php");
-    CloseableHttpResponse response = httpclient.execute(get);
-    String body = getTextFrom(response);
-    return body.contains(String.format("<div class=\"space-10\"></div><div class=\"alert alert-warning\"><p><strong>Warning:</strong> You should disable the default '%s' account or change its password.</p></div></div>", username));
   }
 }
