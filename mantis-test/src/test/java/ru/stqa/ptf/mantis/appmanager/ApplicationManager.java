@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 
 public class ApplicationManager {
@@ -20,19 +21,21 @@ public class ApplicationManager {
   private RegistrationHelper registrationHelper;
   private FtpHelper ftp;
   private MailHelper mailHelper;
+  private JamesHelper jamesHelper;
 
   public ApplicationManager(String browser) {
     this.browser = browser;
     properties = new Properties();
   }
 
+  @SuppressWarnings("deprecation")
   public WebDriver getDriver() {
     if (wd == null) {
       if (browser.equals(BrowserType.CHROME)) { wd = new ChromeDriver();}
       else if (browser.equals(BrowserType.FIREFOX)) { wd = new FirefoxDriver();}
       else if (browser.equals(BrowserType.IE)) { wd = new InternetExplorerDriver();}
 
-      //wd.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+      wd.manage().timeouts().implicitlyWait(50, TimeUnit.SECONDS);
       wd.get(properties.getProperty("web.baseUrl"));
 
     }
@@ -73,6 +76,13 @@ public class ApplicationManager {
       mailHelper = new MailHelper(this);
     }
     return mailHelper;
+  }
+
+  public JamesHelper james() {
+    if (jamesHelper == null) {
+      jamesHelper = new JamesHelper(this);
+    }
+    return jamesHelper;
   }
 
   public void stop() {
