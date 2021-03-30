@@ -19,9 +19,12 @@ public class ApplicationManager {
   private String browser;
   private final Properties properties;
   private RegistrationHelper registrationHelper;
+  private LoginHelper loginHelper;
   private FtpHelper ftp;
   private MailHelper mailHelper;
   private JamesHelper jamesHelper;
+  private DbHelper dbHelper;
+  private UsersHelper usersHelper;
 
   public ApplicationManager(String browser) {
     this.browser = browser;
@@ -56,6 +59,20 @@ public class ApplicationManager {
     return registrationHelper;
   }
 
+  public UsersHelper user() {
+    if (usersHelper == null) {
+      usersHelper = new UsersHelper(this);
+    }
+    return usersHelper;}
+
+
+  public LoginHelper login() {
+    if (loginHelper == null) {
+      loginHelper = new LoginHelper(this);
+    }
+    return loginHelper;
+  }
+
   public  HttpSession newSession() {
     return new HttpSession (this);
   }
@@ -67,8 +84,7 @@ public class ApplicationManager {
   }
 
 
-  public String getProperty(String key) {
-    return properties.getProperty(key);
+  public String getProperty(String key) { return properties.getProperty(key);
   }
 
   public MailHelper mail () {
@@ -78,11 +94,20 @@ public class ApplicationManager {
     return mailHelper;
   }
 
+
   public JamesHelper james() {
     if (jamesHelper == null) {
       jamesHelper = new JamesHelper(this);
     }
     return jamesHelper;
+  }
+
+  public DbHelper db() {
+    if (dbHelper == null) {
+      dbHelper = new DbHelper(this);
+    }
+
+    return dbHelper;
   }
 
   public void stop() {
