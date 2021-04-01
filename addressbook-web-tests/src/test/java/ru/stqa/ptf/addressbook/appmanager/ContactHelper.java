@@ -7,15 +7,24 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.Contacts;
+import ru.stqa.ptf.addressbook.model.GroupData;
 import ru.stqa.ptf.addressbook.model.Groups;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import static org.testng.Assert.assertFalse;
 import static ru.stqa.ptf.addressbook.tests.TestBase.app;
 
 
 public class ContactHelper extends HelperBase {
+
+  private Properties properties;
 
   public ContactHelper(WebDriver wd) {
     super(wd);
@@ -74,15 +83,13 @@ public class ContactHelper extends HelperBase {
     contactCache = null;
   }
 
-  public void addToGroup(ContactData contact, ContactData contactsBefore) {
-    selectToGroup(contactsBefore);
-    selectContactById(contact.getId());
-    selectAddTo();
-  }
-
   public void removeFromGroup(ContactData contactsBefore) {
     app.goTo().GroupPage();
     app.contact().removeFrom(contactsBefore);
+    app.goTo().GroupPage();
+    new Select(wd.findElement(By.name("group"))).selectByVisibleText("[all]");
+  }
+  public void listOfAllGroups() {
     app.goTo().GroupPage();
     new Select(wd.findElement(By.name("group"))).selectByVisibleText("[all]");
   }
@@ -92,6 +99,38 @@ public class ContactHelper extends HelperBase {
     fillContactForm(contact, false);
     submitContacModification();
     contactCache = null;
+  }
+
+  public void addBeforeGroup() throws IOException {
+    properties = new Properties();
+    String target = System.getProperty("target", "local");
+    properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
+
+
+    Groups allGroups = app.group().all();
+    List<String> groupNames = new ArrayList<>();
+    for (GroupData group : allGroups) {
+      groupNames.add(group.getName());
+    }
+
+    if (!groupNames.contains("test1")) {
+      app.group().create(new GroupData()
+              .withName(properties.getProperty("web.BeforeGroupName1"))
+              .withHeader(properties.getProperty("web.GroupHeadere"))
+              .withFooter(properties.getProperty("web.GroupFooter")));
+      app.goTo().GroupsPage();
+    }
+  }
+
+  public void addToGroup(ContactData contact, ContactData contactsBefore) {
+    selectToGroup(contactsBefore);
+    selectContactById(contact.getId());
+    selectAddTo();
+  }
+
+  public void contactAddToGroup(ContactData contact) {
+    selectContactById(contact.getId());
+    selectAddTo();
   }
 
   private void initContactModificationById(int id) {
@@ -116,14 +155,9 @@ public class ContactHelper extends HelperBase {
     type(By.name("email2"), contactData.getEmail2());
     type(By.name("email3"), contactData.getEmail3());
 
-    if (creation) {
-      if (contactData.getGroups().size() == 0) {
-        new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroup());
-      } else if (contactData.getGroups().size() > 0) {
-        Assert.assertTrue(contactData.getGroups().size() == 1);
-        new Select(wd.findElement(By.name("new_group"))).selectByVisibleText(contactData.getGroups().iterator().next().getName());
-      }
-    } else assertFalse(isElementPresent(By.name("new_group")));
+//    if (creation) {
+//        new Select(wd.findElement(By.name("new_group"))).selectByIndex(0);
+//    } else assertFalse(isElementPresent(By.name("new_group")));
   }
 
   public ContactData infoFromEditForm(ContactData contact) {
