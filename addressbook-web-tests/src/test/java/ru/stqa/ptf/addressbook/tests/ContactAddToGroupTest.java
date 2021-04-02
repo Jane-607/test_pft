@@ -4,6 +4,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.Contacts;
+import ru.stqa.ptf.addressbook.model.Groups;
 
 import java.io.File;
 import java.io.FileReader;
@@ -29,7 +30,7 @@ public class ContactAddToGroupTest extends TestBase {
   public void ensurePreconditions() throws IOException {
 
     app.goTo().GroupsPage();
-    app.contact().addBeforeGroup();
+    app.contact().addGroup();
   }
 
   @Test
@@ -38,14 +39,14 @@ public class ContactAddToGroupTest extends TestBase {
     app.goTo().HomePage();
 
     List<ContactData> contactsWithoutGroupBefore = new ArrayList<>();
-    Contacts contactsBefore = app.db().contacts();
-    for (ContactData contact : contactsBefore) {
-      if (contact.getGroups().size() == 0) {
+    Contacts allContactsBefore = app.db().contacts();
+    for (ContactData contact : allContactsBefore) {
+      if (contact.getGroups().size() != 0) {
         contactsWithoutGroupBefore.add(contact);
       }
     }
-    Integer beforeContacts = contactsWithoutGroupBefore.size();
-    if (contactsWithoutGroupBefore.size() == 0) {
+    Integer beforeContactsWithOutGroup = contactsWithoutGroupBefore.size();
+    if (allContactsBefore.size() == 0) {
       app.contact().create(new ContactData()
               .withFirstName(properties.getProperty("web.FirstName"))
               .withMiddleName(properties.getProperty("web.MiddleName"))
@@ -58,40 +59,37 @@ public class ContactAddToGroupTest extends TestBase {
               .withEmail(properties.getProperty("web.BeforeEmail"))
               .withEmail2(properties.getProperty("web.BeforeEmail2"))
               .withEmail3(properties.getProperty("web.BeforeEmail3")), true);
+
+      app.goTo().HomePage();
     }
 
-    app.goTo().HomePage();
-    List<ContactData> contactsWithoutGroup = new ArrayList<>();
-    Contacts contactsAll = app.db().contacts();
-    for (ContactData contact : contactsAll) {
-      if (contact.getGroups().size() == 0) {
-        contactsWithoutGroup.add(contact);
-        break;
-      }
+    ContactData allContactsWithGroup = app.db().contacts().iterator().next();
+    Groups afterAllContactsWithGroup = allContactsWithGroup.getGroups();
+
+
+    if (afterAllContactsWithGroup.size() == 0) {
+      app.contact().contactAddToGroup(allContactsWithGroup.getId());
+      app.goTo().GroupPage();
+      app.contact().listOfAllGroups();
+    } else {
+      app.contact().contactRemoveFromGroup(allContactsWithGroup.getId());
+      app.contact().listOfAllGroups();
+      app.contact().contactAddToGroup(allContactsWithGroup.getId());
+      app.goTo().GroupPage();
+      app.contact().listOfAllGroups();
     }
 
-    app.contact().contactAddToGroup(contactsWithoutGroup.get(0));
-    app.contact().listOfAllGroups();
+    ContactData contactsAllWithGroupAfter = app.db().contacts().iterator().next();
+    Integer afterContactsWithGroup = contactsAllWithGroupAfter.getGroups().size();
 
-    List<ContactData> contactsWithoutGroupAfter = new ArrayList<>();
-    Contacts contactsAfter = app.db().contacts();
-    for (ContactData contact : contactsAfter) {
-      if (contact.getGroups().size() == 0) {
-        contactsWithoutGroupAfter.add(contact);
-      }
-    }
 
-    Integer afterContacts = contactsWithoutGroupAfter.size();
+    if (beforeContactsWithOutGroup == 0) {
+      assertThat(beforeContactsWithOutGroup, equalTo(afterContactsWithGroup - 1));
 
-    if (beforeContacts == 0) {
-      assertThat(beforeContacts, equalTo(afterContacts));
-    }
-    else {
-      assertThat(beforeContacts,
-              equalTo(afterContacts + 1));
+    } else {
+      assertThat(beforeContactsWithOutGroup, equalTo(afterContactsWithGroup));
     }
     verifyContactListInUI();
-
   }
 }
 

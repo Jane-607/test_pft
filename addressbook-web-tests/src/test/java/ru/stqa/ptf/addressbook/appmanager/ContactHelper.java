@@ -4,21 +4,18 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import ru.stqa.ptf.addressbook.model.ContactData;
 import ru.stqa.ptf.addressbook.model.Contacts;
 import ru.stqa.ptf.addressbook.model.GroupData;
 import ru.stqa.ptf.addressbook.model.Groups;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static org.testng.Assert.assertFalse;
 import static ru.stqa.ptf.addressbook.tests.TestBase.app;
 
 
@@ -33,40 +30,36 @@ public class ContactHelper extends HelperBase {
   public void initContactCreation() {
     click(By.linkText("add new"));
   }
+
   public void submitContactCreation() {
     click(By.name("submit"));
   }
-  public void deleteSelectedContacts() { click(By.xpath("//input[@value='Delete']")); }
-  public void submitContacModification() { click(By.name("update")); }
+
+  public void deleteSelectedContacts() {
+    click(By.xpath("//input[@value='Delete']"));
+  }
+
+  public void submitContacModification() {
+    click(By.name("update"));
+  }
+
   public void selectAddTo() {
     click(By.cssSelector("input[value='Add to']"));
   }
-  public void selectContactById(int id) {  wd.findElement(By.cssSelector("input[value='" + id + "']")).click(); }
-  public void removeFrom(ContactData contact) { selectContactById(contact.getId()); click(By.xpath("//*[@id=\"content\"]/form[2]/div[3]/input")); }
-  public int count() { return wd.findElements(By.name("selected[]")).size(); }
 
-  public void selectToGroup(ContactData contactsBefore) {
-    Groups groups = app.db().contacts().iterator().next().getGroups();
-    if (groups.size() != 0) {
-      String groupName = groups.iterator().next().getName();
-      new Select(wd.findElement(By.name("to_group"))).selectByVisibleText(groupName);
-    } else {
-      app.goTo().GroupsPage();
-      String nameGroup = app.group().all().iterator().next().getName();
-      app.goTo().HomePage();
-      new Select(wd.findElement(By.name("to_group"))).selectByVisibleText(nameGroup);
-    }
+  public void removeFrom() {
+    click(By.xpath("//*[@id=\"content\"]/form[2]/div[3]/input"));
   }
 
-  public boolean selectGroup(boolean b) {
-    Groups groups = app.db().contacts().iterator().next().getGroups();
-    if (groups.size() != 0) {
-      String groupName = groups.iterator().next().getName();
-      new Select(wd.findElement(By.name("group"))).selectByVisibleText(groupName);
-    }
-    else {return b == false;}
-    return b;
+  public void selectContactById(int id) {
+    wd.findElement(By.cssSelector("input[value='" + id + "']")).click();
   }
+
+
+  public int count() {
+    return wd.findElements(By.name("selected[]")).size();
+  }
+
 
   public void create(ContactData contact, boolean b) {
     initContactCreation();
@@ -83,15 +76,13 @@ public class ContactHelper extends HelperBase {
     contactCache = null;
   }
 
-  public void removeFromGroup(ContactData contactsBefore) {
-    app.goTo().GroupPage();
-    app.contact().removeFrom(contactsBefore);
-    app.goTo().GroupPage();
-    new Select(wd.findElement(By.name("group"))).selectByVisibleText("[all]");
-  }
   public void listOfAllGroups() {
     app.goTo().GroupPage();
     new Select(wd.findElement(By.name("group"))).selectByVisibleText("[all]");
+  }
+
+  public void listOfTestGroup() {
+    new Select(wd.findElement(By.name("group"))).selectByVisibleText("test1");
   }
 
   public void modify(ContactData contact) {
@@ -101,11 +92,10 @@ public class ContactHelper extends HelperBase {
     contactCache = null;
   }
 
-  public void addBeforeGroup() throws IOException {
+  public void addGroup() throws IOException {
     properties = new Properties();
     String target = System.getProperty("target", "local");
     properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
-
 
     Groups allGroups = app.group().all();
     List<String> groupNames = new ArrayList<>();
@@ -120,17 +110,6 @@ public class ContactHelper extends HelperBase {
               .withFooter(properties.getProperty("web.GroupFooter")));
       app.goTo().GroupsPage();
     }
-  }
-
-  public void addToGroup(ContactData contact, ContactData contactsBefore) {
-    selectToGroup(contactsBefore);
-    selectContactById(contact.getId());
-    selectAddTo();
-  }
-
-  public void contactAddToGroup(ContactData contact) {
-    selectContactById(contact.getId());
-    selectAddTo();
   }
 
   private void initContactModificationById(int id) {
@@ -156,7 +135,7 @@ public class ContactHelper extends HelperBase {
     type(By.name("email3"), contactData.getEmail3());
 
 //    if (creation) {
-//        new Select(wd.findElement(By.name("new_group"))).selectByIndex(0);
+//      new Select(wd.findElement(By.name("new_group"))).selectByIndex(0);
 //    } else assertFalse(isElementPresent(By.name("new_group")));
   }
 
@@ -179,6 +158,7 @@ public class ContactHelper extends HelperBase {
   }
 
   private Contacts contactCache = null;
+
   public Contacts all() {
     if (contactCache != null) {
       return new Contacts(contactCache);
@@ -197,5 +177,18 @@ public class ContactHelper extends HelperBase {
               .withAddress(address).withAllEmails(allEmails).withAllPhones(allPhones));
     }
     return new Contacts(contactCache);
+  }
+
+  public void contactAddToGroup(int id) {
+    // listOfTestGroup();
+    selectContactById(id);
+    selectAddTo();
+  }
+
+  public void contactRemoveFromGroup(int id) {
+    listOfTestGroup();
+    selectContactById(id);
+    removeFrom();
+    app.goTo().GroupPage();
   }
 }

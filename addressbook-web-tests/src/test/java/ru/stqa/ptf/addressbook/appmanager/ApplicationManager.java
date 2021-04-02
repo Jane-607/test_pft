@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 
 public class ApplicationManager {
@@ -41,7 +42,7 @@ public class ApplicationManager {
     else if (browser.equals(BrowserType.FIREFOX)) { wd = new FirefoxDriver();}
     else if (browser.equals(BrowserType.IE)) { wd = new InternetExplorerDriver();}
 
-    //wd.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    wd.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
     wd.get(properties.getProperty("web.baseUrl"));
     groupHelper = new GroupHelper(wd);
     contactHelper = new ContactHelper(wd);

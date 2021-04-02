@@ -3,7 +3,7 @@ package ru.stqa.ptf.addressbook.tests;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.ContactData;
-import ru.stqa.ptf.addressbook.model.GroupData;
+import ru.stqa.ptf.addressbook.model.Contacts;
 import ru.stqa.ptf.addressbook.model.Groups;
 
 import java.io.File;
@@ -27,35 +27,28 @@ public class ContactDeleteFromGroupTest extends TestBase {
   }
 
   @BeforeMethod
-  public void ensurePreconditions() {
+  public void ensurePreconditions() throws IOException {
 
     app.goTo().GroupsPage();
-    Groups allGroups = app.group().all();
+    app.contact().addGroup();
+  }
 
-    List<String> groupNames = new ArrayList<>();
-    for (GroupData group : allGroups) {
-      groupNames.add(group.getName());
-    }
+  @Test
 
-    if (!groupNames.contains("test1")) {
-      app.group().create(new GroupData()
-              .withName(properties.getProperty("web.BeforeGroupName1"))
-              .withHeader(properties.getProperty("web.GroupHeadere"))
-              .withFooter(properties.getProperty("web.GroupFooter")));
-      app.goTo().GroupsPage();
-    }
-    if (!groupNames.contains("test2")) {
-      app.group().create(new GroupData()
-              .withName(properties.getProperty("web.BeforeGroupName2"))
-              .withHeader(properties.getProperty("web.GroupHeadere"))
-              .withFooter(properties.getProperty("web.GroupFooter")));
-      app.goTo().GroupsPage();
-    }
+  public void testContactDeleteFromGroup() {
 
     app.goTo().HomePage();
 
-    if (app.db().contacts().size() == 0) {
-      Groups groups = app.db().groups();
+    List<ContactData> contactsWithGroupBefore = new ArrayList<>();
+    Contacts allContactsBefore = app.db().contacts();
+    for (ContactData contactWithGroup : allContactsBefore) {
+      if (contactWithGroup.getGroups().size() != 0) {
+        contactsWithGroupBefore.add(contactWithGroup);
+      }
+    }
+    Integer beforeContactsWithGroup = contactsWithGroupBefore.size();
+
+    if (allContactsBefore.size() == 0) {
       app.contact().create(new ContactData()
               .withFirstName(properties.getProperty("web.FirstName"))
               .withMiddleName(properties.getProperty("web.MiddleName"))
@@ -68,38 +61,41 @@ public class ContactDeleteFromGroupTest extends TestBase {
               .withEmail(properties.getProperty("web.BeforeEmail"))
               .withEmail2(properties.getProperty("web.BeforeEmail2"))
               .withEmail3(properties.getProperty("web.BeforeEmail3"))
-              .inGroup(groups.iterator().next()), true);
-    }
-  }
+              .withGroup(properties.getProperty("web.BeforeGroupName1")), true);
 
-  @Test
-  public void testContactDeleteFromGroup() {
+      app.goTo().HomePage();
 
-    app.goTo().HomePage();
-    ContactData contactBefore = app.db().contacts().iterator().next();
-    Groups allGroupsBefore = contactBefore.getGroups();
-
-    if (app.contact().selectGroup(true)){
-      app.contact().removeFromGroup(contactBefore);
-      }
-    else {
-      app.contact().addToGroup(contactBefore, contactBefore);
-      app.contact().removeFromGroup(contactBefore);
     }
 
-    app.goTo().HomePage();
+    ContactData allContactsWithGroup = app.db().contacts().iterator().next();
+    Groups afterAllContactsWithGroup = allContactsWithGroup.getGroups();
 
-    ContactData allContactAfter = app.db().contacts().iterator().next();
-    Groups allGroupsAfter = allContactAfter.getGroups();
+    if (afterAllContactsWithGroup.size() == 0) {
+      app.contact().contactAddToGroup(allContactsWithGroup.getId());
+      app.goTo().GroupPage();
+      app.contact().contactRemoveFromGroup(allContactsWithGroup.getId());
+      app.contact().listOfAllGroups();
+    } else {
+      app.contact().contactRemoveFromGroup(allContactsWithGroup.getId());
+      app.contact().listOfAllGroups();
+    }
 
-    if
-    (allGroupsBefore.size() <= 0)
-    {assertThat(allGroupsAfter.size(), equalTo(allGroupsBefore.size()));}
-    else
-    {assertThat(allGroupsAfter.size(), equalTo(allGroupsBefore.size() - 1));}
+    ContactData contactsAllWithGroupAfter = app.db().contacts().iterator().next();
+    Integer afterContactsWithGroup = contactsAllWithGroupAfter.getGroups().size();
+
+    if (beforeContactsWithGroup == 0) {
+      assertThat(beforeContactsWithGroup, equalTo(afterContactsWithGroup));
+
+    } else {
+      assertThat(beforeContactsWithGroup, equalTo(afterContactsWithGroup + 1));
+    }
     verifyContactListInUI();
   }
 }
+
+
+
+
 
 
 
