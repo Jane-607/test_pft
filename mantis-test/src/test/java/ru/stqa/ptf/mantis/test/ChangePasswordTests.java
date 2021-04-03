@@ -26,49 +26,47 @@ public class ChangePasswordTests extends TestBase {
 
   public void testChangePassword() throws IOException, MessagingException {
 
-    app.login().start("administrator", "root");
-    app.user().deleteAll();
-
-    long now = System.currentTimeMillis();
-    String user = String.format("user%s", now);
-    String password = "password";
-    String email = user + "@localhost";
-
-    app.registration().start(user, email);
-    app.login().start("administrator", "root");
-
-    //Users allUsers = app.user().all();
     Users allUsers = app.db().users();
-    List <String> userName = new ArrayList<>();
-    for (UserData name: allUsers) {
-      if (name.getName().contains(user)) {
-        app.user().choice(user);
-
-        List<MailMessage> mailMessages = app.mail().waitForMail(2, 30000);
-        String confirmationLink = app.user().findConfirmationLink(mailMessages, email);
-
-        password = "password2";
-        app.registration().finish(confirmationLink, user, password);
-        app.login().startUser(user, password);
-        assertTrue(app.newSession().login(user, password));
+    List<String> nonAdminUsers = new ArrayList<>();
+    for (UserData user : allUsers) {
+      if (!user.getName().equals("administrator")) {
+        nonAdminUsers.add(user.getName());
       }
     }
 
+    String password = "password2";
+    String user = "";
+    if (nonAdminUsers.size() == 0) {
+      long now = System.currentTimeMillis();
+      user = String.format("user%s", now);
+      String email = user + "@localhost";
 
-//    Users allUsers = app.db().users();
-//    List<Integer> userId = new ArrayList<>();
-//    for (UserData id: allUsers) {
-//      userId.add(id.getId());
-//      //  if (userName.contains(user)) {
-//      //    app.user().choice();
-//    }
+      app.registration().start(user, email);
+      List<MailMessage> mailMessages = app.mail().waitForMail(2, 30000);
+      String confirmationLink = app.user().findConfirmationLinkFirst(mailMessages, email);
+      app.registration().finish(confirmationLink, user, password);
+    } else {
+      user = nonAdminUsers.get(0);
+    }
+    String email = user + "@localhost";
+
+    app.login().start("administrator", "root");
+    app.user().choice(user);
+    app.user().changeUser();
+    List<MailMessage> mailMessages = app.mail().waitForMail(1, 30000);
+    if (mailMessages.size() == 1) {
+      String confirmationLink = app.user().findConfirmationLinkFirst(mailMessages, email);
+      app.registration().finish(confirmationLink, user, password);
+    } else {
+      String confirmationLink = app.user().findConfirmationLinkLast(mailMessages, email);
+      app.registration().finish(confirmationLink, user, password);
+    }
+    app.login().startUser(user, password);
+    assertTrue(app.newSession().login(user, password));
   }
 
-
-
-
   @AfterMethod(alwaysRun = true)
-  public  void stopMailServer(){
+  public void stopMailServer() {
     app.mail().stop();
   }
 }

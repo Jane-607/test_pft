@@ -24,13 +24,4 @@ public class LoginHelper extends HelperBase {
     type(By.name("password"), password);
     click(By.cssSelector("input[value='Вход']"));
   }
-
-
-  public void finishLogin(String confirmationLink, String user, String password) {
-    wd.get(confirmationLink);
-    type(By.name("realname"),user);
-    type(By.name("password"),password);
-    type(By.name("password_confirm"),password);
-    click(By.cssSelector("span.bigger-110"));
-  }
 }

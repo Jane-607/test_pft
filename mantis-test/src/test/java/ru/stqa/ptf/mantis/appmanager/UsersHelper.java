@@ -7,7 +7,6 @@ import ru.stqa.ptf.mantis.model.MailMessage;
 import ru.stqa.ptf.mantis.model.UserData;
 import ru.stqa.ptf.mantis.model.Users;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UsersHelper extends HelperBase {
@@ -41,36 +40,22 @@ public class UsersHelper extends HelperBase {
     wd.findElement(By.linkText(userName)).click();
   }
 
+  public void changeUser () {
+    wd.findElement(By.cssSelector("input[value = 'Сбросить пароль']")).click();
+  }
 
 
-  public String findConfirmationLink(List<MailMessage> mailMessages, String email) {
+  public String findConfirmationLinkFirst(List<MailMessage> mailMessages, String email) {
     String mailMessage = mailMessages.stream().filter((m) -> m.to.equals(email)).findFirst().get().text;
     VerbalExpression regex = VerbalExpression.regex().find("http://").nonSpace().oneOrMore().build();
     return regex.getText(mailMessage);
   }
 
-  public void deleteAll() {
-    Users allUsers = app.user().all();
-
-    if (allUsers.size() > 1) {
-      List<String> userNames = new ArrayList<>();
-      for (UserData user : allUsers) {
-        userNames.add(user.getName());
-      }
-
-      String foundedUser = "";
-      for (String userName : userNames) {
-        if (!userName.contains("administrator")) {
-          app.user().delete();
-        }
-        if (userName.equals("")) {
-          foundedUser = userName;
-          break;
-        }
-      }
-    }
+  public String findConfirmationLinkLast(List<MailMessage> mailMessages, String email) {
+    String mailMessage = mailMessages.get(2).text;
+    VerbalExpression regex = VerbalExpression.regex().find("http://").nonSpace().oneOrMore().build();
+    return regex.getText(mailMessage);
   }
-
 }
 
 
