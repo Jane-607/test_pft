@@ -16,8 +16,8 @@ public class SoapTests extends TestBase {
 
 
   @Test
-
   public void testGetProjects() throws IOException, ServiceException {
+    skipIfNotFixed(3);
     Set<Project> projects = app.soap().getProject();
     System.out.println(projects.size());
     for (Project project: projects) {
@@ -26,7 +26,6 @@ public class SoapTests extends TestBase {
   }
 
   @Test
-
   public  void testCreateIssue() throws IOException, ServiceException {
     Set<Project> projects = app.soap().getProject();
     Issue issue = new Issue().withSummary("Test issue")

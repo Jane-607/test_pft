@@ -35,8 +35,7 @@ public class SoapHelper {
   }
 
   private MantisConnectPortType getMantisConnect() throws ServiceException, IOException {
-    MantisConnectPortType mc = new MantisConnectLocator()
-            .getMantisConnectPort(new URL("http://localhost/mantisbt-2.25.0/api/soap/mantisconnect.php"));
+    MantisConnectPortType mc = new MantisConnectLocator().getMantisConnectPort(new URL(app.getProperty("soap.baseUrl")));
     return mc;
   }
 
@@ -49,8 +48,8 @@ public class SoapHelper {
     issueData.setDescription(issue.getDescription());
     issueData.setProject(new ObjectRef(BigInteger.valueOf(issue.getProject().getId()), issue.getProject().getName()));
     issueData .setCategory(categories[0]);
-    BigInteger issueId = mc.mc_issue_add("administrator", "root", issueData);
-    IssueData createdIssueData = mc.mc_issue_get("administrator", "root", issueId);
+    BigInteger issueId = mc.mc_issue_add(app.getProperty("soap.login"), app.getProperty("soap.password"), issueData);
+    IssueData createdIssueData = mc.mc_issue_get(app.getProperty("soap.login"), app.getProperty("soap.password"), issueId);
     return new Issue()
             .withId(createdIssueData.getId().intValue())
             .withSummary(createdIssueData.getSummary())
@@ -58,6 +57,13 @@ public class SoapHelper {
             .withProject(new Project()
             .withId(createdIssueData.getProject().getId().intValue())
             .withName(createdIssueData.getProject().getName()));
+  }
+
+  public IssueData getIssue(int issueId) throws IOException, ServiceException {
+    MantisConnectPortType mc = getMantisConnect();
+
+    IssueData issue = mc.mc_issue_get(app.getProperty("soap.login"), app.getProperty("soap.password"), BigInteger.valueOf(issueId));
+    return issue;
   }
 }
 
