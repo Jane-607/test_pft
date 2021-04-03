@@ -10,6 +10,8 @@ dependencies {
     compile 'org.hamcrest:hamcrest:2.2'
     compile 'com.google.code.gson:gson:2.8.6'
     compile 'ch.qos.logback:logback-classic:1.1.5'
+    compile 'biz.futureware.mantis:mantis-axis-soap-client:1.2.19'
+
 }
 
 buildscript{
