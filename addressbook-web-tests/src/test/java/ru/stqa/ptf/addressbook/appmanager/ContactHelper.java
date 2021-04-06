@@ -55,6 +55,17 @@ public class ContactHelper extends HelperBase {
     wd.findElement(By.cssSelector("input[value='" + id + "']")).click();
   }
 
+  public ContactData getContactById(int id) {
+    Contacts allContacts = app.db().contacts();
+    for (ContactData contact : allContacts) {
+      if (contact.getId() == id) {
+        return contact;
+      }
+    }
+
+    return null;
+  }
+
 
   public int count() {
     return wd.findElements(By.name("selected[]")).size();
@@ -190,5 +201,27 @@ public class ContactHelper extends HelperBase {
     selectContactById(id);
     removeFrom();
     app.goTo().GroupPage();
+  }
+
+  public List<ContactData> getContactsWithoutGroups() {
+    List<ContactData> contactsWithoutGroup = new ArrayList<ContactData>();
+    Contacts allContacts = app.db().contacts();
+    for (ContactData contact : allContacts) {
+      if (contact.getGroups().size() == 0) {
+        contactsWithoutGroup.add(contact);
+      }
+    }
+    return contactsWithoutGroup;
+  }
+
+  public List<ContactData> getContactsWithGroups() {
+    List<ContactData> contactsWithoutGroup = new ArrayList<ContactData>();
+    Contacts allContacts = app.db().contacts();
+    for (ContactData contact : allContacts) {
+      if (contact.getGroups().size() == 0) {
+        contactsWithoutGroup.add(contact);
+      }
+    }
+    return contactsWithoutGroup;
   }
 }

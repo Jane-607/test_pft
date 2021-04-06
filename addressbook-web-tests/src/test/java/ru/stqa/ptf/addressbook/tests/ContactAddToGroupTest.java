@@ -38,15 +38,9 @@ public class ContactAddToGroupTest extends TestBase {
 
     app.goTo().HomePage();
 
-    List<ContactData> contactsWithoutGroupBefore = new ArrayList<>();
-    Contacts allContactsBefore = app.db().contacts();
-    for (ContactData contact : allContactsBefore) {
-      if (contact.getGroups().size() != 0) {
-        contactsWithoutGroupBefore.add(contact);
-      }
-    }
-    Integer beforeContactsWithOutGroup = contactsWithoutGroupBefore.size();
-    if (allContactsBefore.size() == 0) {
+    List<ContactData> contactsWithoutGroup = app.contact().getContactsWithoutGroups();
+
+    if (contactsWithoutGroup.size() == 0) {
       app.contact().create(new ContactData()
               .withFirstName(properties.getProperty("web.FirstName"))
               .withMiddleName(properties.getProperty("web.MiddleName"))
@@ -60,35 +54,23 @@ public class ContactAddToGroupTest extends TestBase {
               .withEmail2(properties.getProperty("web.BeforeEmail2"))
               .withEmail3(properties.getProperty("web.BeforeEmail3")), true);
 
+      contactsWithoutGroup = app.contact().getContactsWithoutGroups();
+
       app.goTo().HomePage();
     }
 
-    ContactData allContactsWithGroup = app.db().contacts().iterator().next();
-    Groups afterAllContactsWithGroup = allContactsWithGroup.getGroups();
 
+    ContactData contactWithoutGroup = contactsWithoutGroup.get(0);
+    Integer groupSizeBefore = 0;
 
-    if (afterAllContactsWithGroup.size() == 0) {
-      app.contact().contactAddToGroup(allContactsWithGroup.getId());
-      app.goTo().GroupPage();
-      app.contact().listOfAllGroups();
-    } else {
-      app.contact().contactRemoveFromGroup(allContactsWithGroup.getId());
-      app.contact().listOfAllGroups();
-      app.contact().contactAddToGroup(allContactsWithGroup.getId());
-      app.goTo().GroupPage();
-      app.contact().listOfAllGroups();
-    }
+    app.contact().contactAddToGroup(contactWithoutGroup.getId());
+    app.goTo().GroupPage();
+    app.contact().listOfAllGroups();
 
-    ContactData contactsAllWithGroupAfter = app.db().contacts().iterator().next();
-    Integer afterContactsWithGroup = contactsAllWithGroupAfter.getGroups().size();
+    ContactData contactWithoutGroupAfter = app.contact().getContactById(contactWithoutGroup.getId());
+    Integer groupSizeAfter = contactWithoutGroupAfter.getGroups().size();
 
-
-    if (beforeContactsWithOutGroup == 0) {
-      assertThat(beforeContactsWithOutGroup, equalTo(afterContactsWithGroup - 1));
-
-    } else {
-      assertThat(beforeContactsWithOutGroup, equalTo(afterContactsWithGroup));
-    }
+    assertThat(groupSizeBefore, equalTo(groupSizeAfter - 1));
     verifyContactListInUI();
   }
 }

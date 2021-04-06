@@ -39,10 +39,9 @@ public class ContactDeleteFromGroupTest extends TestBase {
 
     app.goTo().HomePage();
 
-    List<ContactData> contactsWithGroupBefore = new ArrayList<>();
-    Contacts allContactsBefore = app.db().contacts();
-    for (ContactData contactWithGroup : allContactsBefore) {
-      if (contactWithGroup.getGroups().size() != 0) {
+    List<ContactData> contactsWithGroup = app.contact().getContactsWithGroups();
+
+      if (contacstWithGroup.getGroups().size() != 0) {
         contactsWithGroupBefore.add(contactWithGroup);
       }
     }
