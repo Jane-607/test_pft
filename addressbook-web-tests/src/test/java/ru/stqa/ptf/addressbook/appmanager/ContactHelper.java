@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import static org.testng.Assert.assertFalse;
 import static ru.stqa.ptf.addressbook.tests.TestBase.app;
 
 
@@ -72,9 +73,16 @@ public class ContactHelper extends HelperBase {
   }
 
 
-  public void create(ContactData contact, boolean b) {
+  public void createContactWithoutGroup(ContactData contact, boolean b) {
     initContactCreation();
-    fillContactForm(contact, true);
+    fillContactFormWithoutGroup(contact, true);
+    submitContactCreation();
+    contactCache = null;
+  }
+
+  public void createContactWithGroup(ContactData contact, boolean b) {
+    initContactCreation();
+    fillContactFormWithGroup(contact, true);
     submitContactCreation();
     contactCache = null;
   }
@@ -98,7 +106,7 @@ public class ContactHelper extends HelperBase {
 
   public void modify(ContactData contact) {
     initContactModificationById(contact.getId());
-    fillContactForm(contact, false);
+    fillContactFormWithoutGroup(contact, false);
     submitContacModification();
     contactCache = null;
   }
@@ -131,7 +139,7 @@ public class ContactHelper extends HelperBase {
     cells.get(7).findElement(By.tagName("a")).click();
   }
 
-  public void fillContactForm(ContactData contactData, boolean creation) {
+  public void fillContactFormWithGroup(ContactData contactData, boolean creation) {
     type(By.name("firstname"), contactData.getFirstName());
     type(By.name("middlename"), contactData.getMiddleName());
     type(By.name("lastname"), contactData.getLastName());
@@ -145,9 +153,24 @@ public class ContactHelper extends HelperBase {
     type(By.name("email2"), contactData.getEmail2());
     type(By.name("email3"), contactData.getEmail3());
 
-//    if (creation) {
-//      new Select(wd.findElement(By.name("new_group"))).selectByIndex(0);
-//    } else assertFalse(isElementPresent(By.name("new_group")));
+    if (creation) {
+      new Select(wd.findElement(By.name("new_group"))).selectByIndex(1);
+    } else assertFalse(isElementPresent(By.name("new_group")));
+  }
+
+  public void fillContactFormWithoutGroup(ContactData contactData, boolean creation) {
+    type(By.name("firstname"), contactData.getFirstName());
+    type(By.name("middlename"), contactData.getMiddleName());
+    type(By.name("lastname"), contactData.getLastName());
+    //attach (By.name("photo"), contactData.getPhoto());
+    type(By.name("company"), contactData.getCompany());
+    type(By.name("address"), contactData.getAddress());
+    type(By.name("home"), contactData.getHome());
+    type(By.name("mobile"), contactData.getMobile());
+    type(By.name("work"), contactData.getWork());
+    type(By.name("email"), contactData.getEmail());
+    type(By.name("email2"), contactData.getEmail2());
+    type(By.name("email3"), contactData.getEmail3());
   }
 
   public ContactData infoFromEditForm(ContactData contact) {
@@ -215,13 +238,13 @@ public class ContactHelper extends HelperBase {
   }
 
   public List<ContactData> getContactsWithGroups() {
-    List<ContactData> contactsWithoutGroup = new ArrayList<ContactData>();
+    List<ContactData> contactsWithGroup = new ArrayList<ContactData>();
     Contacts allContacts = app.db().contacts();
     for (ContactData contact : allContacts) {
-      if (contact.getGroups().size() == 0) {
-        contactsWithoutGroup.add(contact);
+      if (contact.getGroups().size() != 0) {
+        contactsWithGroup.add(contact);
       }
     }
-    return contactsWithoutGroup;
+    return contactsWithGroup;
   }
 }

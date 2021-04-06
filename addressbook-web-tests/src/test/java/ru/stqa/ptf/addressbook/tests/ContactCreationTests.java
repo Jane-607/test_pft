@@ -46,7 +46,7 @@ public class ContactCreationTests extends TestBase {
     app.goTo().HomePage();
 
     Contacts before = app.db().contacts();
-    app.contact().create(contact, true);
+    app.contact().createContactWithoutGroup(contact, true);
     app.goTo().HomePage();
     assertThat(app.contact().count(), equalTo(before.size() + 1));
 
@@ -67,7 +67,7 @@ public class ContactCreationTests extends TestBase {
             .inGroup(groups.iterator().next());
     app.goTo().HomePage();
     Contacts before = app.db().contacts();
-    app.contact().create(newContact, true);
+    app.contact().createContactWithoutGroup(newContact, true);
     app.goTo().HomePage();
     assertThat(app.contact().count(), equalTo(before.size()));
 

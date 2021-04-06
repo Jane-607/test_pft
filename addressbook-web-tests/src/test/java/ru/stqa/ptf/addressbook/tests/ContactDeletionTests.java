@@ -41,7 +41,7 @@ public class ContactDeletionTests extends TestBase {
 
     if (app.db().contacts().size() == 0) {
       Groups groups = app.db().groups();
-      app.contact().create(new ContactData()
+      app.contact().createContactWithoutGroup(new ContactData()
               .withFirstName(properties.getProperty("web.FirstName"))
               .withMiddleName(properties.getProperty("web.MiddleName"))
               .withLastName(properties.getProperty("web.LastName"))

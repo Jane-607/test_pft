@@ -3,13 +3,10 @@ package ru.stqa.ptf.addressbook.tests;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.ContactData;
-import ru.stqa.ptf.addressbook.model.Contacts;
-import ru.stqa.ptf.addressbook.model.Groups;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -41,14 +38,8 @@ public class ContactDeleteFromGroupTest extends TestBase {
 
     List<ContactData> contactsWithGroup = app.contact().getContactsWithGroups();
 
-      if (contacstWithGroup.getGroups().size() != 0) {
-        contactsWithGroupBefore.add(contactWithGroup);
-      }
-    }
-    Integer beforeContactsWithGroup = contactsWithGroupBefore.size();
-
-    if (allContactsBefore.size() == 0) {
-      app.contact().create(new ContactData()
+    if (contactsWithGroup.size() == 0) {
+      app.contact().createContactWithGroup(new ContactData()
               .withFirstName(properties.getProperty("web.FirstName"))
               .withMiddleName(properties.getProperty("web.MiddleName"))
               .withLastName(properties.getProperty("web.LastName"))
@@ -59,35 +50,25 @@ public class ContactDeleteFromGroupTest extends TestBase {
               .withWork(properties.getProperty("web.BeforeWorkPhone"))
               .withEmail(properties.getProperty("web.BeforeEmail"))
               .withEmail2(properties.getProperty("web.BeforeEmail2"))
-              .withEmail3(properties.getProperty("web.BeforeEmail3"))
-              .withGroup(properties.getProperty("web.BeforeGroupName1")), true);
+              .withEmail3(properties.getProperty("web.BeforeEmail3")), true);
+
+      contactsWithGroup = app.contact().getContactsWithGroups();
 
       app.goTo().HomePage();
-
     }
 
-    ContactData allContactsWithGroup = app.db().contacts().iterator().next();
-    Groups afterAllContactsWithGroup = allContactsWithGroup.getGroups();
+    ContactData contactWithGroup = contactsWithGroup.get(0);
+    Integer groupSizeBefore = contactWithGroup.getGroups().size();
 
-    if (afterAllContactsWithGroup.size() == 0) {
-      app.contact().contactAddToGroup(allContactsWithGroup.getId());
-      app.goTo().GroupPage();
-      app.contact().contactRemoveFromGroup(allContactsWithGroup.getId());
-      app.contact().listOfAllGroups();
-    } else {
-      app.contact().contactRemoveFromGroup(allContactsWithGroup.getId());
-      app.contact().listOfAllGroups();
-    }
+    app.contact().contactAddToGroup(contactWithGroup.getId());
+    app.goTo().GroupPage();
+    app.contact().contactRemoveFromGroup(contactWithGroup.getId());
+    app.contact().listOfAllGroups();
 
-    ContactData contactsAllWithGroupAfter = app.db().contacts().iterator().next();
-    Integer afterContactsWithGroup = contactsAllWithGroupAfter.getGroups().size();
+    ContactData contactWithGroupAfter = app.contact().getContactById(contactWithGroup.getId());
+    Integer groupSizeAfter = contactWithGroupAfter.getGroups().size();
 
-    if (beforeContactsWithGroup == 0) {
-      assertThat(beforeContactsWithGroup, equalTo(afterContactsWithGroup));
-
-    } else {
-      assertThat(beforeContactsWithGroup, equalTo(afterContactsWithGroup + 1));
-    }
+    assertThat(groupSizeBefore, equalTo(groupSizeAfter + 1));
     verifyContactListInUI();
   }
 }

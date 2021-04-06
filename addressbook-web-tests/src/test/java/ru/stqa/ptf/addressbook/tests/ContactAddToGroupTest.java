@@ -3,13 +3,10 @@ package ru.stqa.ptf.addressbook.tests;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.ContactData;
-import ru.stqa.ptf.addressbook.model.Contacts;
-import ru.stqa.ptf.addressbook.model.Groups;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -41,7 +38,7 @@ public class ContactAddToGroupTest extends TestBase {
     List<ContactData> contactsWithoutGroup = app.contact().getContactsWithoutGroups();
 
     if (contactsWithoutGroup.size() == 0) {
-      app.contact().create(new ContactData()
+      app.contact().createContactWithoutGroup(new ContactData()
               .withFirstName(properties.getProperty("web.FirstName"))
               .withMiddleName(properties.getProperty("web.MiddleName"))
               .withLastName(properties.getProperty("web.LastName"))
