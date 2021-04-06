@@ -26,6 +26,7 @@ public class ApplicationManager {
   private DbHelper dbHelper;
   private UsersHelper usersHelper;
   private SoapHelper soapHelper;
+  private RestHelper restHelper;
 
   public ApplicationManager(String browser) {
     this.browser = browser;
@@ -35,9 +36,13 @@ public class ApplicationManager {
   @SuppressWarnings("deprecation")
   public WebDriver getDriver() {
     if (wd == null) {
-      if (browser.equals(BrowserType.CHROME)) { wd = new ChromeDriver();}
-      else if (browser.equals(BrowserType.FIREFOX)) { wd = new FirefoxDriver();}
-      else if (browser.equals(BrowserType.IE)) { wd = new InternetExplorerDriver();}
+      if (browser.equals(BrowserType.CHROME)) {
+        wd = new ChromeDriver();
+      } else if (browser.equals(BrowserType.FIREFOX)) {
+        wd = new FirefoxDriver();
+      } else if (browser.equals(BrowserType.IE)) {
+        wd = new InternetExplorerDriver();
+      }
 
       wd.manage().timeouts().implicitlyWait(50, TimeUnit.SECONDS);
       wd.get(properties.getProperty("web.baseUrl"));
@@ -46,7 +51,7 @@ public class ApplicationManager {
     return wd;
   }
 
-  public FtpHelper ftp () {
+  public FtpHelper ftp() {
     if (ftp == null) {
       ftp = new FtpHelper(this);
     }
@@ -64,7 +69,8 @@ public class ApplicationManager {
     if (usersHelper == null) {
       usersHelper = new UsersHelper(this);
     }
-    return usersHelper;}
+    return usersHelper;
+  }
 
 
   public LoginHelper login() {
@@ -74,8 +80,8 @@ public class ApplicationManager {
     return loginHelper;
   }
 
-  public  HttpSession newSession() {
-    return new HttpSession (this);
+  public HttpSession newSession() {
+    return new HttpSession(this);
   }
 
 
@@ -85,10 +91,11 @@ public class ApplicationManager {
   }
 
 
-  public String getProperty(String key) { return properties.getProperty(key);
+  public String getProperty(String key) {
+    return properties.getProperty(key);
   }
 
-  public MailHelper mail () {
+  public MailHelper mail() {
     if (mailHelper == null) {
       mailHelper = new MailHelper(this);
     }
@@ -110,7 +117,8 @@ public class ApplicationManager {
 
     return dbHelper;
   }
- public SoapHelper soap() {
+
+  public SoapHelper soap() {
     if (soapHelper == null) {
       soapHelper = new SoapHelper(this);
     }
@@ -122,5 +130,13 @@ public class ApplicationManager {
     if (wd != null) {
       wd.quit();
     }
+  }
+
+  public RestHelper rest() {
+    if (restHelper == null) {
+      restHelper = new RestHelper(this);
+    }
+
+    return restHelper;
   }
 }

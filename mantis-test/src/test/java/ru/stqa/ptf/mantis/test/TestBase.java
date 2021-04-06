@@ -1,7 +1,11 @@
 package ru.stqa.ptf.mantis.test;
 
 import biz.futureware.mantis.rpc.soap.client.IssueData;
-import biz.futureware.mantis.rpc.soap.client.ObjectRef;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.jayway.restassured.RestAssured;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.testng.SkipException;
@@ -12,7 +16,7 @@ import ru.stqa.ptf.mantis.appmanager.ApplicationManager;
 import javax.xml.rpc.ServiceException;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
+import java.util.Set;
 
 public class TestBase {
 
@@ -33,7 +37,16 @@ public class TestBase {
     app.stop();
   }
 
-  public boolean isIssueOpen(int issueId) throws IOException, ServiceException {
+  public int createIssue(Issue newIssue) throws IOException {
+    String json = RestAssured.given()
+            .parameter("subject", newIssue.getSubject())
+            .parameter("description", newIssue.getDescription())
+            .post("https://bugify.stqa.ru/api/issues.json").asString();
+    JsonElement parsed = new JsonParser().parse(json);
+    return parsed.getAsJsonObject().get("issue_id").getAsInt();
+  }
+
+  public boolean isIssueOpenSoap(int issueId) throws IOException, ServiceException {
     IssueData issue = app.soap().getIssue(issueId);
     if(issue.getStatus().getName().equals("closed")) {
       return false;
@@ -42,8 +55,40 @@ public class TestBase {
     return true;
   }
 
-  public void skipIfNotFixed(int issueId) throws IOException, ServiceException {
-    if (isIssueOpen(issueId)) {
+  public void skipIfNotFixedSoap(int issueId) throws IOException, ServiceException {
+    if (isIssueOpenSoap(issueId)) {
+      throw new SkipException("Ignored because of issue " + issueId);
+    }
+  }
+
+  public Set<Issue> getIssue() throws IOException {
+    String json = RestAssured.get("https://bugify.stqa.ru/api/issues.json").asString();
+    JsonElement parsed = new JsonParser().parse(json);
+    JsonElement issues = parsed.getAsJsonObject().get("issues");
+    Set<Issue> fromJson = new Gson().fromJson(issues, new TypeToken<Set<Issue>>() {}.getType());
+    return fromJson;
+  }
+
+  public Issue getIssue(int issueId) throws IOException {
+    Set<Issue> issues = getIssue();
+    for (Issue issue : issues) {
+      if(issue.getId() == issueId) {
+        return issue;
+      }
+    }
+    return null;
+  }
+
+  public boolean isIssueOpenRest(int issueId) throws IOException, ServiceException {
+    Issue issue = getIssue(issueId);
+    if(issue.getState() != 0) {
+      return false;
+    }
+    return true;
+  }
+
+  public void skipIfNotFixedRest(int issueId) throws IOException, ServiceException {
+    if (isIssueOpenRest(issueId)) {
       throw new SkipException("Ignored because of issue " + issueId);
     }
   }

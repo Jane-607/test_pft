@@ -4,10 +4,7 @@ import org.testng.annotations.Test;
 import ru.stqa.ptf.mantis.model.Project;
 
 import javax.xml.rpc.ServiceException;
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.util.Set;
 
 import static org.testng.Assert.assertEquals;
@@ -17,7 +14,7 @@ public class SoapTests extends TestBase {
 
   @Test
   public void testGetProjects() throws IOException, ServiceException {
-    skipIfNotFixed(3);
+    skipIfNotFixedSoap(3);
     Set<Project> projects = app.soap().getProject();
     System.out.println(projects.size());
     for (Project project: projects) {
