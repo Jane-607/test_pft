@@ -1,7 +1,7 @@
 .gradle
 build/
 out/
-project/
+project.шаблон/
 
 # Ignore Gradle GUI config
 gradle-app.setting
