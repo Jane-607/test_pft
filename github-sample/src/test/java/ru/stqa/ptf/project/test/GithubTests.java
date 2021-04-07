@@ -6,7 +6,6 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.IdentityHashMap;
 
 public class GithubTests {
 
