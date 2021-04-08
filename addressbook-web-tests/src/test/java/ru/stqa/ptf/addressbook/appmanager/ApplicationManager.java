@@ -34,9 +34,9 @@ public class ApplicationManager {
     this.browser = browser;
     properties = new Properties();
   }
-  
+
   public void init() throws IOException {
-    String target = System.getProperty("target","local");
+    String target = System.getProperty("target", "local");
     properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
 
     dbHelper = new DbHelper();
@@ -52,7 +52,7 @@ public class ApplicationManager {
     } else {
       DesiredCapabilities capabilities = new DesiredCapabilities();
       capabilities.setBrowserName(browser);
-      capabilities.setPlatform(Platform.fromString(System.getProperty("platform","win10")));
+      capabilities.setPlatform(Platform.fromString(System.getProperty("platform", "win10")));
       wd = new RemoteWebDriver(new URL(properties.getProperty("selenium.server")), capabilities);
     }
 
@@ -62,20 +62,35 @@ public class ApplicationManager {
     contactHelper = new ContactHelper(wd);
     navigationHelper = new NavigationHelper(wd);
     sessionHelper = new SessionHelper(wd);
-    sessionHelper.login(properties.getProperty("web.adminLogin"),properties.getProperty("web.adminPassword"));
+    sessionHelper.login(properties.getProperty("web.adminLogin"), properties.getProperty("web.adminPassword"));
   }
 
   public void stop() {
     wd.quit();
   }
+
   public void logout() {
     sessionHelper.logout();
   }
 
-  public GroupHelper group() { return groupHelper; }
-  public ContactHelper contact() { return contactHelper; }
-  public NavigationHelper goTo() { return navigationHelper; }
-  public SessionHelper sh() { return sessionHelper; }
-  public DbHelper db() {return dbHelper; }
+  public GroupHelper group() {
+    return groupHelper;
+  }
+
+  public ContactHelper contact() {
+    return contactHelper;
+  }
+
+  public NavigationHelper goTo() {
+    return navigationHelper;
+  }
+
+  public SessionHelper sh() {
+    return sessionHelper;
+  }
+
+  public DbHelper db() {
+    return dbHelper;
+  }
 
 }
