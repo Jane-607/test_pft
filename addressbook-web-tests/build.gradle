@@ -24,9 +24,9 @@ task testGroups(type: Test) {
         systemProperty 'browser', "${browser}"
     }
 
-    if (project.hasProperty('platform')) {
-        systemProperty 'platform', "${platform}"
-    }
+//    if (project.hasProperty('platform')) {
+//        systemProperty 'platform', "${platform}"
+//    }
 
     if (project.hasProperty('target')) {
         systemProperty 'target', "${target}"
