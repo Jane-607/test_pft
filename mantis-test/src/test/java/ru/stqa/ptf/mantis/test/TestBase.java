@@ -70,13 +70,12 @@ public class TestBase {
   }
 
   public Issue getIssue(int issueId) throws IOException {
-    Set<Issue> issues = getIssue();
-    for (Issue issue : issues) {
-      if(issue.getId() == issueId) {
-        return issue;
-      }
-    }
-    return null;
+
+    String json = RestAssured.get("https://bugify.stqa.ru/api/issues/"+ issueId + ".json").asString();
+    JsonElement parsed = new JsonParser().parse(json);
+    JsonElement issues = parsed.getAsJsonObject().get("issues");
+    Set<Issue> fromJson = new Gson().fromJson(issues, new TypeToken<Set<Issue>>() {}.getType());
+    return fromJson.iterator().next();
   }
 
   public boolean isIssueOpenRest(int issueId) throws IOException, ServiceException {
