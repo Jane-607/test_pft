@@ -3,6 +3,7 @@ package ru.stqa.ptf.addressbook.tests;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.stqa.ptf.addressbook.model.ContactData;
+import ru.stqa.ptf.addressbook.model.Groups;
 
 import java.io.File;
 import java.io.FileReader;
@@ -58,7 +59,7 @@ public class ContactDeleteFromGroupTest extends TestBase {
     }
 
     ContactData contactWithGroup = contactsWithGroup.get(0);
-    Integer groupSizeBefore = contactWithGroup.getGroups().size();
+    Groups beforeGroups = contactWithGroup.getGroups();
 
     app.contact().contactAddToGroup(contactWithGroup.getId());
     app.goTo().GroupPage();
@@ -66,9 +67,10 @@ public class ContactDeleteFromGroupTest extends TestBase {
     app.contact().listOfAllGroups();
 
     ContactData contactWithGroupAfter = app.contact().getContactById(contactWithGroup.getId());
-    Integer groupSizeAfter = contactWithGroupAfter.getGroups().size();
+    Groups afterGroups = contactWithGroupAfter.getGroups();
 
-    assertThat(groupSizeBefore, equalTo(groupSizeAfter + 1));
+    assertThat(afterGroups, equalTo(beforeGroups.without(beforeGroups.iterator().next())));
+
     verifyContactListInUI();
   }
 }
