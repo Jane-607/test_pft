@@ -75,12 +75,13 @@ public class TestBase {
     JsonElement parsed = new JsonParser().parse(json);
     JsonElement issues = parsed.getAsJsonObject().get("issues");
     Set<Issue> fromJson = new Gson().fromJson(issues, new TypeToken<Set<Issue>>() {}.getType());
-    return fromJson.iterator().next();
+    Issue issue = fromJson.iterator().next();
+    return issue;
   }
 
   public boolean isIssueOpenRest(int issueId) throws IOException, ServiceException {
     Issue issue = getIssue(issueId);
-    if(issue.getState() != 0) {
+    if(!issue.getStateName().equals("Open")) {
       return false;
     }
     return true;

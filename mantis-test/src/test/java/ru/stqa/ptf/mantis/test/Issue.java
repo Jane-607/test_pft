@@ -10,7 +10,7 @@ public class Issue {
   private String summery;
   private String description;
   private String subject;
-  private int state;
+  private String state_name;
   private Project project;
 
   public int getId() {
@@ -37,8 +37,8 @@ public class Issue {
     return subject;
   }
 
-  public int getState() {
-    return state;
+  public String getStateName() {
+    return state_name;
   }
 
 
@@ -67,8 +67,8 @@ public class Issue {
     return this;
   }
 
-  public Issue withState(int state) {
-    this.state = state;
+  public Issue withStateName(String state) {
+    this.state_name = state;
     return this;
   }
 
@@ -77,11 +77,11 @@ public class Issue {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Issue issue = (Issue) o;
-    return id == issue.id && Objects.equals(summery, issue.summery) && Objects.equals(description, issue.description) && Objects.equals(subject, issue.subject) && Objects.equals(state, issue.state) && Objects.equals(project, issue.project);
+    return id == issue.id && Objects.equals(summery, issue.summery) && Objects.equals(description, issue.description) && Objects.equals(subject, issue.subject) && Objects.equals(state_name, issue.state_name) && Objects.equals(project, issue.project);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, summery, description, subject, state, project);
+    return Objects.hash(id, summery, description, subject, state_name, project);
   }
 }
